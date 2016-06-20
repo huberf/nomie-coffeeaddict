@@ -1,0 +1,77 @@
+<!--
+  Nomie Experiment HTML Formating Notes
+
+  This HTML will be parsed by a markdown editor. Meaning you can use either HTML or Markdown which is Good.
+  It also means that any inline styles, calles to javascript or external CSS files will be promptly removed.
+
+  This means you're limited to the CSS classes that are available in Nomie.
+  While this document doesnt cover much, it will give you a starting point - until I have
+  better documentation setup for all the available class names.
+
+-->
+<div class="bar bar-green">
+  <div class="title"><span class="text-thin">Big Spender <span class="text-faded">|</span></span>  <%= experiment.slots.spend.tracker.label %></div>
+</div>
+<br />
+<br />
+<% if(overlimit && goal) { %>
+  <div class="text-red text-lg text-center text-white padding-lg padding-md-bottom">$<%= (thisWeekSpend - goal).toFixed(2) %> over limit
+    <p class="text-solid text-sm"><%= weekStart %> to <%= weekEnd %></p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwBwAFAgH9XSO6wwAAAABJRU5ErkJggg==" width="100%" height="20" />
+  </div>
+<% } else if(goal) { %>
+  <div class="text-green text-lg text-center text-white padding-lg">$<%= (goal - thisWeekSpend).toFixed(2) %> under limit
+    <p class="text-solid text-sm"><%= weekStart %> to <%= weekEnd %></p>
+  </div>
+  <% if(percentTowardGoal>0) { %><div class="padding-md-left padding-md-right"><div class=""><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPkWGr0BwADeQHdTs1z2gAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="20" /></div></div><% } %>
+<% } %>
+<div class="">
+  <div class="nui-list">
+
+    <div class="nui-item nui-item-lg">
+      <div class="nui-item-content">
+        <label for="">Today</label>
+      </div>
+      <div class="nui-item-addon text-lg padding-md-top padding-md-bottom">
+          $<%= todaySpend %>
+      </div>
+    </div>
+    <div class="nui-item nui-item-lg">
+      <div class="nui-item-content">
+        <label for="" class="text-faded">Yesterday</label>
+      </div>
+      <div class="nui-item-addon text-lg padding-md-top padding-md-bottom text-faded">
+          $<%= yesterdaySpend %>
+      </div>
+    </div>
+    <div class="nui-item-divider"></div>
+
+    <div class="nui-item nui-item-lg">
+      <div class="nui-item-content">
+        <label for="">This Week</label>
+      </div>
+      <div class="nui-item-addon text-lg padding-md-top padding-md-bottom">
+          $<%= thisWeekSpend.toFixed(2) %>
+      </div>
+    </div>
+
+    <div class="nui-item nui-item-lg">
+      <div class="nui-item-content">
+        <label for="" class="text-faded">Last Week</label>
+      </div>
+      <div class="nui-item-addon text-lg padding-md-top padding-md-bottom text-faded" >
+          $<%= lastWeekSpend.toFixed(2) %>
+      </div>
+    </div>
+
+    <% if(goal > 0) { %>
+    <div class="nui-item-divider"></div>
+    <div class="nui-item">
+      <div class="nui-item-content text-center">
+        <label for="">Weekly Spend Limit <strong>$<%= goal %></strong></label>
+      </div>
+    </div>
+    <% } %>
+
+  </div>
+</div>
