@@ -7,29 +7,63 @@ var Mailer = require('../components/mailer');
 var User = require('../components/user');
 var config = require(__dirname+'/../config');
 
-var experimentSettings = {
-  name : "BigSpender",
-  summary : "Track how much you're spending",
-  id : "io.nomie.experiments.bigspender."+Math.random(), // Math.random allows users to add this experiment multiple times.
-  color : "#63ab0d", // Pick a color that works on both black and white backgrounds
-  uses : ['nickname','geo'], // available: 'nickname','geo'
-  createdBy : "Brandon Corbin"
-};
+// *****************************************************
+// Generate the Experiment JSON doc for Nomie to consume
 
+router.get('/', function(req, res, next) {
 
-router.get('/fuck', function(req, res, next) {
+  // Determine if we should do HTTPS or not.
+  var protocol = (req.secure) ? 'https://' : 'http://';
+  if(process.env['NODE_ENV']=='production') {
+    protocol = 'https://';
+  }
 
-  var results = {};
-  results.passed = "2016-06-19T15:08:07.613Z";
-  results.now = new Date();
-  results.offset = new Date(results.passed).getTimezoneOffset();
-  results.moment = moment().parseZone(results.passed).utcOffset();
-  res.json(results);
-});
-router.post('/fuck', function(req, res, next) {
-  res.json({
-    body : req.body
-  });
+  // Base Configuration
+  var experimentConfiguration = {
+    "secure" : req.secure,
+    "name" : "BigSpender",
+    "id" : "io.nomie.experiments.bigspender."+Math.random(), // Math.random allows users to add this experiment multiple times.
+    "summary" : "Track how much you're spending",
+    "uses" : ['nickname','geo'], // available: 'nickname','geo'
+    "color" : "#63ab0d", // Pick a color that works on both black and white backgrounds
+    "hostedBy" : "Brandon Corbin",
+    "more" : protocol+req.headers.host+"/about",
+    "collection" : {
+        "method" : "automatic",
+        "frequency" : "30mm", // every 30 minutes
+        "url" : protocol+req.headers.host+"/capture",
+        "amount" : "1m" // select one month back
+    },
+    "leave" : protocol+req.headers.host+"/capture",
+    "info" : {
+      "goal" : {
+        "type" : "text",
+        "label" : "Weekly Max Spend",
+        "value" : "",
+        "required" : "true",
+        "placeholder" : "100.00",
+        "description" : "What's the max you want to spend each week?"
+      },
+      "email" : {
+        "type" : "text",
+        "label" : "Optional Email",
+        "value" : "",
+        "placeholder" : "your@email.com",
+        "description" : "Notify you when you go over the limit?"
+      }
+
+    },
+    "slots" : {
+      "spend" : {
+        "label" : "Food Out Cost",
+        "summary" : "Tracker used to track spending",
+        "tracker" : null,
+        "required" : true
+      }
+    }
+  };
+
+  res.json(experimentConfiguration);
 });
 
 /*****************************************************
@@ -83,10 +117,6 @@ router.post('/capture', function(req, res, next) {
           // Look up the user by the anon id - pulling from redis
       // this User is defined in ../components/user.js
       var user = new User(req.body.anonid, function(err, user) {
-        console.log("## CAPTURE :: USER LOAD", err, user);
-        // What's the name of the primary slot for this experiment?
-
-
 
         try {
           var slotName = 'spend';
@@ -96,10 +126,6 @@ router.post('/capture', function(req, res, next) {
           // Determine the users offset by looking at the last records time
           var offset = req.body.timezoneOffset || 0;
           var createdDate = new Date(req.body.created);
-
-          console.log("########################################################");
-          console.log("##### User Timezone Offset", offset, new Date(req.body.created));
-          console.log("########################################################");
 
           // Set up the base numbers
           var thisWeekSpend = 0;
@@ -149,8 +175,6 @@ router.post('/capture', function(req, res, next) {
             }
           }
 
-          console.log('################################################');
-          console.log("### SHOULD BE THE TRACKER ID", slot.tracker._id);
 
           // If the user provided a goal - lets do some
           // of that goal comparison magic
@@ -199,12 +223,7 @@ router.post('/capture', function(req, res, next) {
             var emailTemplate = fs.readFileSync('./views/email.ejs','utf8');
             var emailRendered = ejs.render(emailTemplate, results);
 
-            //console.log("::: EMAIL CONTENT ", emailRendered);
-
             var time = user.get(lastMessageKey);
-
-            console.log("## CAPTURE :: LAST MESSAGE", time);
-
             var sendMail = true;
 
             if(!time) {
@@ -273,65 +292,8 @@ router.post('/capture', function(req, res, next) {
 
 });
 
-// Get the main page - this will generate the Experiment JSON doc that nomie will
-// use for the join process.
-router.get('/', function(req, res, next) {
-
-  var protocol = (req.secure) ? 'https://' : 'http://';
-
-  if(process.env['NODE_ENV']=='production') {
-    protocol = 'https://';
-  }
-
-  var experimentConfiguration = {
-    "secure" : req.secure,
-    "name" : experimentSettings.name,
-    "id" : experimentSettings.id,
-    "summary" : experimentSettings.summary,
-    "uses" : experimentSettings.uses,
-    "color" : experimentSettings.color,
-    "hostedBy" : experimentSettings.createdBy,
-    // "more" : protocol+req.headers.host+"/?detail",
-    "collection" : {
-        "method" : "automatic",
-        "frequency" : "30mm", // every 30 minutes
-        "url" : protocol+req.headers.host+"/capture",
-        "amount" : "1m" // select one month back
-    },
-    "leave" : protocol+req.headers.host+"/capture",
-    "info" : {
-      "goal" : {
-        "type" : "text",
-        "label" : "Weekly Max Spend",
-        "value" : "",
-        "required" : "true",
-        "placeholder" : "100.00",
-        "description" : "What's the max you want to spend each week?"
-      },
-      "email" : {
-        "type" : "text",
-        "label" : "Optional Email",
-        "value" : "",
-        "placeholder" : "your@email.com",
-        "description" : "Notify you when you go over the limit?"
-      }
-
-    },
-    "slots" : {
-      "spend" : {
-        "label" : "Money",
-        "summary" : "Tracker used to track spending",
-        "tracker" : null,
-        "required" : true
-      }
-    }
-  };
-
-  res.json(experimentConfiguration);
+router.get('/about', function(req, res, next) {
+  res.render('about');
 });
-
-
-
-
 
 module.exports = router;
