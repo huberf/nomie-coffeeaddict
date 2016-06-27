@@ -23,7 +23,7 @@ router.get('/', function(req, res, next) {
     "secure" : req.secure,
     "name" : "BigSpender",
     "id" : "io.nomie.experiments.bigspender."+Math.random(), // Math.random allows users to add this experiment multiple times.
-    "summary" : "Track how much you're spending",
+    "summary" : "Monitor your spending! BigSpender helps keep track of how much money you spend on... whatever. Set a weekly budget and be notified when you're getting close.",
     "uses" : ['nickname','geo'], // available: 'nickname','geo'
     "color" : "#63ab0d", // Pick a color that works on both black and white backgrounds
     "hostedBy" : "Brandon Corbin",
@@ -42,14 +42,14 @@ router.get('/', function(req, res, next) {
         "value" : "",
         "required" : "true",
         "placeholder" : "100.00",
-        "description" : "What's the max you want to spend each week?"
+        "description" : "Your weekly budget on this tracker"
       },
       "email" : {
         "type" : "text",
         "label" : "Optional Email",
         "value" : "",
         "placeholder" : "your@email.com",
-        "description" : "Notify you when you go over the limit?"
+        "description" : "Email to notify when nearing budget"
       }
 
     },
