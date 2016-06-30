@@ -48,7 +48,7 @@
     </div>
 
     <div class="nui-item">
-      <div class="nui-item-content width-33 ">
+      <div class="nui-item-content width-33 flex-shrink-off flex-grow-off">
         TOTALS
       </div>
       <div class="nui-item-content text-right width-33 text-bold flex-shrink-off flex-grow-off">
@@ -61,7 +61,7 @@
     
     <% var days = ['sun','mon','tue','wed','thu','fri','sat']; for(var i in days) { %>
     <div class="nui-item <% if(thisDay==days[i]) { %> activated text-bold <% } %>">
-      <div class="nui-item-content width-33" >
+      <div class="nui-item-content width-33 flex-shrink-off flex-grow-off" >
         <%= days[i].toUpperCase() %>
       </div>
       <div class="nui-item-content text-right width-33 flex-shrink-off flex-grow-off text-normal text-faded-90">
