@@ -16,14 +16,12 @@
 <br />
 <% if(overlimit && goal) { %>
   <div class="text-red text-lg text-center text-white padding-lg padding-md-bottom">$<%= (thisWeekSpend - goal).toFixed(2) %> over limit
-    <p class="text-solid text-sm"><%= weekStart %> to <%= weekEnd %></p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwBwAFAgH9XSO6wwAAAABJRU5ErkJggg==" width="14%" height="20" />
+    <br /><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwBwAFAgH9XSO6wwAAAABJRU5ErkJggg==" width="14%" height="20" />
   </div>
 <% } else if(goal) { %>
   <div class="text-green text-lg text-center text-white padding-lg">$<%= (goal - thisWeekSpend).toFixed(2) %> under limit
-    <p class="text-solid text-sm"><%= weekStart %> to <%= weekEnd %></p>
   </div>
-  <% if(percentTowardGoal>0) { %><div class="padding-md-left padding-md-right"><div class=""><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPkWGr0BwADeQHdTs1z2gAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="20" /></div></div><% } %>
+  <% if(percentTowardGoal>0) { %><div class="padding-md-left padding-md-right"><div class=""><br /><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPkWGr0BwADeQHdTs1z2gAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="20" /></div></div><% } %>
 <% } %>
 <div class="">
   <div class="nui-list">
@@ -53,24 +51,24 @@
       <div class="nui-item-content width-33 ">
         TOTALS
       </div>
-      <div class="nui-item-content text-right width-33 text-bold">
+      <div class="nui-item-content text-right width-33 text-bold flex-shrink-off flex-grow-off">
          $<%= lastWeekSpend.toFixed(2) %>
       </div>
-      <div class="nui-item-content text-right width-33 text-bold">
+      <div class="nui-item-content text-right width-33 text-bold flex-shrink-off flex-grow-off">
           $<%= thisWeekSpend.toFixed(2) %> 
       </div>
     </div>
     
     <% var days = ['sun','mon','tue','wed','thu','fri','sat']; for(var i in days) { %>
-    <div class="nui-item <% if(thisDay==days[i]) { %> text-primary text-bold <% } %>">
+    <div class="nui-item <% if(thisDay==days[i]) { %> activated text-bold <% } %>">
       <div class="nui-item-content width-33" >
         <%= days[i].toUpperCase() %>
       </div>
-      <div class="nui-item-content text-right width-33">
-        <span class="text-thin">$</span><%=parseFloat(lastWeekTally[days[i].toLowerCase()]).toFixed(2) %>
+      <div class="nui-item-content text-right width-33 flex-shrink-off flex-grow-off text-normal text-faded-90">
+        <span class="">$</span><%=parseFloat(lastWeekTally[days[i].toLowerCase()]).toFixed(2) %>
       </div>
-      <div class="nui-item-content text-right width-33">
-          <span class="text-thin">$</span><%=parseFloat(thisWeekTally[days[i].toLowerCase()]).toFixed(2) %>   
+      <div class="nui-item-content text-right width-33 flex-shrink-off flex-grow-off <% if(thisDay==days[i]) { %> text-primary <% } %>">
+          <span class="">$</span><%=parseFloat(thisWeekTally[days[i].toLowerCase()]).toFixed(2) %>   
       </div>
     </div>
     <% } %>
@@ -85,6 +83,15 @@
       </div>
     </div>
     <% } %>
+
+    <div class="nui-item-divider"></div>
+    <div class="nui-item">
+      <div class="nui-item-content">
+            <div class="text-solid text-sm text-center" ><%= weekStart %> to <%= weekEnd %></div>
+      </div>
+    </div>
+    <div class="nui-item-divider"></div>
+    
 
   </div>
 </div>
