@@ -50,8 +50,18 @@ router.get('/', function(req, res, next) {
         "value" : "",
         "placeholder" : "your@email.com",
         "description" : "Email to notify when nearing budget"
+      },
+      "warnme" : {
+        "type" : "select",
+        "label" : "Warn Me",
+        "description" : "This is a sample",
+        "value" : "weekly",
+        "options" : [
+          { label : 'Daily', value : 'daily' },
+          { label : 'Weekly', value : 'weekly' },
+          { label : 'Monthly', value : 'monthly' }
+        ]
       }
-
     },
     "slots" : {
       "spend" : {
@@ -117,7 +127,7 @@ router.post('/capture', function(req, res, next) {
           // Look up the user by the anon id - pulling from redis
       // this User is defined in ../components/user.js
       var user = new User(req.body.anonid, function(err, user) {
-
+        console.log("USER SAVED:: MOVING ON TO PROCESSING RESULTS");
         try {
           var slotName = 'spend';
           var slot = req.body.experiment.slots[slotName]; // Get the Tracker Slot
@@ -136,8 +146,8 @@ router.post('/capture', function(req, res, next) {
           // Setup date keys
           var thisWeek = moment().utcOffset(offset).startOf('week').format('W-YYYY'); // eg 51-2016
           var lastWeek = moment().utcOffset(offset).subtract(1, 'week').startOf('week').format('W-YYYY'); // eg 50-2016
-          var today = moment().utcOffset(offset).format('MMM-Do-YYYY'); // eg Jan-6th-2016
-          var yesterday = moment().utcOffset(offset).subtract(1, 'day').format('MMM-Do-YYYY'); // eg Jan-6th-2016
+          var today = moment().utcOffset(offset).format(daySlotFormat); // eg Jan-6th-2016
+          var yesterday = moment().utcOffset(offset).subtract(1, 'day').format(daySlotFormat); // eg Jan-6th-2016
           var now = moment().utcOffset(offset).format("ddd MMM Do YYYY hh:mma") + ' offset: '+offset + ' created:'+req.body.created + ' typeof: '+moment(req.body.created).utcOffset(offset).format("ddd MMM Do YYYY hh:mma ");
 
           // Get their email - if they passed it.
@@ -155,11 +165,44 @@ router.post('/capture', function(req, res, next) {
 
           // Loop over the individual records
           // Here we will basically tally up the totals based on the week
+          var lastWeekDaily = {};
+          var thisWeekDaily = {};
+          
+          var lwloop = moment().startOf('week').subtract(1, 'week');
+          var twloop = moment().startOf('week');
+          var todayDate = moment().utcOffset(offset);
+          var daySlotFormat = 'YYYY-MM-DD';
+
+          var lastWeekTally = {'sun' : 0, 'mon' : 0, 'tue' : 0, 'wed' : 0, 'thu' : 0, 'fri' : 0, 'sat' : 0};
+          var thisWeekTally = {'sun' : 0, 'mon' : 0, 'tue' : 0, 'wed' : 0, 'thu' : 0, 'fri' : 0, 'sat' : 0};
+          
+
+
+          for(var i=0;i<7;i++) {
+            lastWeekDaily[lwloop.format(daySlotFormat)] = 0;
+            thisWeekDaily[twloop.format(daySlotFormat)] = 0;
+            lwloop.add(1, 'day');
+            twloop.add(1, 'day');
+          }
+
+
+
+
+          
+
           for(var i in rows) {
             var value = rows[i].value || 0;
             var rTime = moment(new Date(rows[i].time)).utcOffset(offset);
-            var day = rTime.format('MMM-Do-YYYY');
+            var day = rTime.format(daySlotFormat);
+            var dayShortName = rTime.format('ddd');
             var week = rTime.startOf('week').format('W-YYYY');
+
+            if(thisWeekDaily.hasOwnProperty(day)) {
+              thisWeekDaily[day] = thisWeekDaily[day] + value;
+            }
+            if(lastWeekDaily.hasOwnProperty(day)) {
+              lastWeekDaily[day] = lastWeekDaily[day] + value;
+            }
 
             if(week === thisWeek) {
               thisWeekSpend = thisWeekSpend + value;
@@ -174,6 +217,21 @@ router.post('/capture', function(req, res, next) {
               yesterdaySpend = yesterdaySpend + value;
             }
           }
+
+          console.log("DAILY FORMATS");
+          console.log(thisWeekDaily);
+          console.log(lastWeekDaily);
+
+          for(var i in thisWeekDaily) {
+            thisWeekTally[moment(new Date(i)).format('ddd').toLowerCase()]=thisWeekDaily[i];
+          }
+           for(var i in lastWeekDaily) {
+            lastWeekTally[moment(new Date(i)).format('ddd').toLowerCase()]=lastWeekDaily[i];
+          }
+
+          console.log("DAILY Tallys");
+          console.log(thisWeekTally);
+          console.log(lastWeekTally);
 
 
           // If the user provided a goal - lets do some
@@ -199,12 +257,17 @@ router.post('/capture', function(req, res, next) {
           // Create a big old Results object full of awesome stuff.
           var results = {
             now : now,
+            thisDay : moment().format('ddd').toLowerCase(),
             overlimit : overlimit,
             goal : goal,
             email : email,
             weekStart : moment().utcOffset(offset).startOf('week').format('ddd MMM Do YYYY'),
             weekEnd : moment().utcOffset(offset).endOf('week').format('ddd MMM Do YYYY'),
             todaySpend : todaySpend,
+            lastWeekDaily : lastWeekDaily,
+            thisWeekDaily : thisWeekDaily,
+            lastWeekTally : lastWeekTally,
+            thisWeekTally : thisWeekTally,
             yesterdaySpend : yesterdaySpend,
             lastWeekSpend : lastWeekSpend,
             percentTowardGoal : percentTowardGoal,
