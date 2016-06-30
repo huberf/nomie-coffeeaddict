@@ -38,11 +38,11 @@ router.get('/', function(req, res, next) {
     "info" : {
       "goal" : {
         "type" : "text",
-        "label" : "Weekly Max Spend",
-        "value" : "",
+        "label" : "Weekly budget",
+        "value" : "75.00",
         "required" : "true",
         "placeholder" : "100.00",
-        "description" : "Your weekly budget on this tracker"
+        "description" : "Weekly budget for this tracker"
       },
       "email" : {
         "type" : "text",
@@ -50,17 +50,6 @@ router.get('/', function(req, res, next) {
         "value" : "",
         "placeholder" : "your@email.com",
         "description" : "Email to notify when nearing budget"
-      },
-      "warnme" : {
-        "type" : "select",
-        "label" : "Warn Me",
-        "description" : "This is a sample",
-        "value" : "weekly",
-        "options" : [
-          { label : 'Daily', value : 'daily' },
-          { label : 'Weekly', value : 'weekly' },
-          { label : 'Monthly', value : 'monthly' }
-        ]
       }
     },
     "slots" : {
@@ -129,6 +118,7 @@ router.post('/capture', function(req, res, next) {
       var user = new User(req.body.anonid, function(err, user) {
         console.log("USER SAVED:: MOVING ON TO PROCESSING RESULTS");
         try {
+          var daySlotFormat = 'YYYY-MM-DD';
           var slotName = 'spend';
           var slot = req.body.experiment.slots[slotName]; // Get the Tracker Slot
           var rows = slot.data || []; // Get Tracker Data
@@ -171,7 +161,7 @@ router.post('/capture', function(req, res, next) {
           var lwloop = moment().startOf('week').subtract(1, 'week');
           var twloop = moment().startOf('week');
           var todayDate = moment().utcOffset(offset);
-          var daySlotFormat = 'YYYY-MM-DD';
+          
 
           var lastWeekTally = {'sun' : 0, 'mon' : 0, 'tue' : 0, 'wed' : 0, 'thu' : 0, 'fri' : 0, 'sat' : 0};
           var thisWeekTally = {'sun' : 0, 'mon' : 0, 'tue' : 0, 'wed' : 0, 'thu' : 0, 'fri' : 0, 'sat' : 0};
@@ -179,8 +169,8 @@ router.post('/capture', function(req, res, next) {
 
 
           for(var i=0;i<7;i++) {
-            lastWeekDaily[lwloop.format(daySlotFormat)] = 0;
-            thisWeekDaily[twloop.format(daySlotFormat)] = 0;
+            lastWeekDaily[lwloop.format(daySlotFormat)] = { value : 0, day : lwloop.format('ddd').toLowerCase() };
+            thisWeekDaily[twloop.format(daySlotFormat)] = { value : 0, day : twloop.format('ddd').toLowerCase() };
             lwloop.add(1, 'day');
             twloop.add(1, 'day');
           }
@@ -198,10 +188,10 @@ router.post('/capture', function(req, res, next) {
             var week = rTime.startOf('week').format('W-YYYY');
 
             if(thisWeekDaily.hasOwnProperty(day)) {
-              thisWeekDaily[day] = thisWeekDaily[day] + value;
+              thisWeekDaily[day].value = thisWeekDaily[day].value + value;
             }
             if(lastWeekDaily.hasOwnProperty(day)) {
-              lastWeekDaily[day] = lastWeekDaily[day] + value;
+              lastWeekDaily[day].value = lastWeekDaily[day].value + value;
             }
 
             if(week === thisWeek) {
@@ -223,10 +213,10 @@ router.post('/capture', function(req, res, next) {
           console.log(lastWeekDaily);
 
           for(var i in thisWeekDaily) {
-            thisWeekTally[moment(new Date(i)).format('ddd').toLowerCase()]=thisWeekDaily[i];
+            thisWeekTally[thisWeekDaily[i].day]=thisWeekDaily[i].value;
           }
            for(var i in lastWeekDaily) {
-            lastWeekTally[moment(new Date(i)).format('ddd').toLowerCase()]=lastWeekDaily[i];
+            lastWeekTally[lastWeekDaily[i].day]=lastWeekDaily[i].value;
           }
 
           console.log("DAILY Tallys");
@@ -257,7 +247,7 @@ router.post('/capture', function(req, res, next) {
           // Create a big old Results object full of awesome stuff.
           var results = {
             now : now,
-            thisDay : moment().format('ddd').toLowerCase(),
+            thisDay : moment().utcOffset(offset).format('ddd').toLowerCase(),
             overlimit : overlimit,
             goal : goal,
             email : email,
