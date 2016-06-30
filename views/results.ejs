@@ -10,15 +10,17 @@
 
 -->
 <% if(overlimit && goal) { %>
-<div class=""><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwBwAFAgH9XSO6wwAAAABJRU5ErkJggg==" width="100%" height="10" /></div><% } else if(goal) { %><% if(percentTowardGoal>0) { %><div class="padding-md-left padding-md-right"><div class=""><br /><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPkWGr0BwADeQHdTs1z2gAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="10" /></div><% } %><% } %>
+<div class="bg-white hairline-all"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwBwAFAgH9XSO6wwAAAABJRU5ErkJggg==" width="100%" height="10" /></div>
+<% } else if(goal) { %><% if(percentTowardGoal>0) { %><div class="bg-white hairline-all"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPkWGr0BwADeQHdTs1z2gAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="10" /></div><% } %><% } %>
 <div class="">
   <div class="nui-list">
     <div class="nui-item">
       <div class="nui-item-content flex-grow">
-        <label for="">BIG SPENDER!</label>
+        <label for=""><%= experiment.slots.spend.tracker.label %></label>
+        <p class="text-xs">Weekly Budget</p>
       </div>
       <div class="nui-item-addon truncate">
-        <%= experiment.slots.spend.tracker.label %>
+        $<%= parseFloat(goal).toFixed(2) %>
       </div>
     </div>
       <div class="nui-item-divider"></div>
@@ -37,7 +39,7 @@
             <label for="" class="text-green text-left">Budget Remaining</label>
           </div>
           <div class="nui-item-addon">
-            <span class="text-red text-lg">$<%= (goal - thisWeekSpend).toFixed(2) %></span>
+            <span class="text-green text-lg">$<%= (goal - thisWeekSpend).toFixed(2) %></span>
           </div>
       </div>
     <% } %>
@@ -48,7 +50,7 @@
         <label for="">Today</label>
       </div>
       <div class="nui-item-addon">
-          <span class="text-lg"> $<%= thisWeekTally[thisDay] %></span>
+          <span class="text-lg"> $<%= parseFloat(thisWeekTally[thisDay]).toFixed(2) %></span>
       </div>
     </div>
 
@@ -92,15 +94,6 @@
     <% } %>
      
     
-
-    <% if(goal > 0) { %>
-    <div class="nui-item-divider"></div>
-    <div class="nui-item">
-      <div class="nui-item-content text-center">
-        <label for="">Weekly Spend Limit <strong>$<%= goal %></strong></label>
-      </div>
-    </div>
-    <% } %>
 
     <div class="nui-item-divider"></div>
     <div class="nui-item">
