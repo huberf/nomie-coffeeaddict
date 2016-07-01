@@ -56,25 +56,18 @@
 
     <div class="nui-item-divider"></div>
   
-    <div class="nui-item">
-      <div class="nui-item-content width-33">&nbsp;</div>
-      <div class="nui-item-content width-33 text-sm text-right">
-        Last Week
-      </div>
-      <div class="nui-item-content width-33 text-sm text-right">
-        This Week
-      </div>
-    </div>
 
     <div class="nui-item bg-primary text-white">
       <div class="nui-item-content width-33 flex-shrink-off flex-grow-off">
         TOTAL
       </div>
       <div class="nui-item-content text-right width-33 text-bold flex-shrink-off flex-grow-off">
+        <div class="text-bold text-sm">Last Week</div>
          $<%= lastWeekSpend.toFixed(2) %>
       </div>
       <div class="nui-item-content text-right width-33 text-bold flex-shrink-off flex-grow-off">
-          $<%= thisWeekSpend.toFixed(2) %> 
+        <div class="text-bold text-sm">This Week</div>  
+        $<%= thisWeekSpend.toFixed(2) %> 
       </div>
     </div>
     
