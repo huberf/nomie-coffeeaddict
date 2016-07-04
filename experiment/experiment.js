@@ -235,7 +235,7 @@ router.post('/capture', function(req, res, next) {
           var overlimit = false;
 
           var lastWeekOverlimit = false;
-          
+
           if(goal > 0 &&  thisWeekSpend > goal) {
             console.log("## CAPTURE :: OVER THE LIMIT!");
             overlimit = true;
@@ -257,6 +257,7 @@ router.post('/capture', function(req, res, next) {
             now : now,
             thisDay : moment().utcOffset(offset).format('ddd').toLowerCase(),
             overlimit : overlimit,
+            lastWeekOverlimit : lastWeekOverlimit,
             goal : goal,
             email : email,
             weekStart : moment().utcOffset(offset).startOf('week').format('ddd MMM Do YYYY'),
