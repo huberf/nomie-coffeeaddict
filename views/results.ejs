@@ -91,13 +91,13 @@
     <% } %>
     <div class="nui-item-divider"></div>
 
-    <% if(overlimit) { %> 
+    <% if(!overlimit) { %> 
       <div class="nui-item">
         <div class="nui-item-content">
           <label for="">Shame Yourself</label>
           <p class="text-sm"></p>
         </div>
-        <a class="flex-shrink-off button addon-button button-clear button-assertive" href="nomie://api/share/I went over my weekly #BigSpender budget by $<%= (thisWeekSpend - goal).toFixed(2) %>! #nomie @nomieApp">Share...</a>
+        <a class="flex-shrink-off button addon-button button-clear button-assertive" href="nomie://api/share/<%= encodeURI("I went over my weekly #BigSpender budget by $"+(thisWeekSpend - goal).toFixed(2)+"! #nomie @nomieApp") %>">Share...</a>
       </div>
       <div class="nui-item-divider hairline-off">
         <p class="text-sm">Share this failure, a little public self shaming can be a great motivator.</p>
@@ -108,7 +108,7 @@
           <label for="">Share this Success!</label>
           <p class="text-sm"></p>
         </div> 
-        <a class="flex-shrink-off button addon-button button-clear button-success" href="nomie://api/share/I'm <%= (goal - thisWeekSpend).toFixed(2) %> under my weekly #BigSpender budget! #nomie @nomieApp">Share...</a>
+        <a class="flex-shrink-off button addon-button button-clear text-green" href="nomie://api/share/<%= encodeURI("I'm $"+(goal - thisWeekSpend).toFixed(2)+" under my weekly #BigSpender budget! #nomie @nomieApp"); %>">Share...</a>
       </div>
       <div class="nui-item-divider hairline-off">
         <p class="text-sm">Share this success, a little public pat-on-the-pack can do some good!</p>
