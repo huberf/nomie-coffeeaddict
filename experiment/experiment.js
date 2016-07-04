@@ -20,7 +20,7 @@ router.get('/', function(req, res, next) {
 
   // Base Configuration
   var experimentConfiguration = {
-    "secure" : req.secure,
+    "secure" : false,
     "name" : "BigSpender",
     "id" : "io.nomie.experiments.bigspender."+Math.random(), // Math.random allows users to add this experiment multiple times.
     "summary" : "Monitor your spending! BigSpender helps keep track of how much money you spend on... whatever. Set a weekly budget and be notified when you're getting close.",
@@ -113,6 +113,7 @@ router.post('/capture', function(req, res, next) {
         message : "No Slots were passed"
       });
     } else {
+      console.log("## CAPTURE :: WE HAVE SLOTS! GOOD.");
           // Look up the user by the anon id - pulling from redis
       // this User is defined in ../components/user.js
       var user = new User(req.body.anonid, function(err, user) {
@@ -145,6 +146,7 @@ router.post('/capture', function(req, res, next) {
           // an email input field as well as a weekly goal.
           // req.body.experiment.info will contain those fields
           // If the user did provide it, we're going to save it
+          
           var email;
           if(req.body.experiment.info.email) {
             email = req.body.experiment.info.email.value || null;
@@ -166,7 +168,7 @@ router.post('/capture', function(req, res, next) {
           var lastWeekTally = {'sun' : 0, 'mon' : 0, 'tue' : 0, 'wed' : 0, 'thu' : 0, 'fri' : 0, 'sat' : 0};
           var thisWeekTally = {'sun' : 0, 'mon' : 0, 'tue' : 0, 'wed' : 0, 'thu' : 0, 'fri' : 0, 'sat' : 0};
           
-
+          console.log("## CAPTURE :: LOOPING OVER DAYS");
 
           for(var i=0;i<7;i++) {
             lastWeekDaily[lwloop.format(daySlotFormat)] = { value : 0, day : lwloop.format('ddd').toLowerCase() };
@@ -174,8 +176,6 @@ router.post('/capture', function(req, res, next) {
             lwloop.add(1, 'day');
             twloop.add(1, 'day');
           }
-
-
 
 
           
@@ -236,6 +236,11 @@ router.post('/capture', function(req, res, next) {
           if(goal > 0 &&  thisWeekSpend > goal) {
             console.log("## CAPTURE :: OVER THE LIMIT!");
             overlimit = true;
+          }
+
+          if(goal > 0 &&  lastWeekSpend > goal) {
+            console.log("## CAPTURE :: OVER THE LIMIT!");
+            lastWeekOverlimit = true;
           }
 
           // Determine the percent towards the goal
