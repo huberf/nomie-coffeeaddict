@@ -233,6 +233,9 @@ router.post('/capture', function(req, res, next) {
 
           // Check to see if we're over the users limit
           var overlimit = false;
+
+          var lastWeekOverlimit = false;
+          
           if(goal > 0 &&  thisWeekSpend > goal) {
             console.log("## CAPTURE :: OVER THE LIMIT!");
             overlimit = true;
