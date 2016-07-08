@@ -21,11 +21,12 @@ router.get('/', function(req, res, next) {
   // Base Configuration
   var experimentConfiguration = {
     "secure" : false,
-    "name" : "BigSpender",
+    "name" : "Big Spender",
+    "img" : "https://snap.icorbin.com/bigspender-cover-2.jpg",
     "id" : "io.nomie.experiments.bigspender."+Math.random(), // Math.random allows users to add this experiment multiple times.
     "summary" : "Monitor your spending! BigSpender helps keep track of how much money you spend on... whatever. Set a weekly budget and be notified when you're getting close.",
     "uses" : ['nickname','geo'], // available: 'nickname','geo'
-    "color" : "#63ab0d", // Pick a color that works on both black and white backgrounds
+    "color" : "#E59B81", // Pick a color that works on both black and white backgrounds
     "hostedBy" : "Brandon Corbin",
     "more" : protocol+req.headers.host+"/about",
     "collection" : {
@@ -38,18 +39,18 @@ router.get('/', function(req, res, next) {
     "info" : {
       "goal" : {
         "type" : "text",
-        "label" : "Weekly budget",
+        "label" : "Your Weekly Budget",
         "value" : "75.00",
         "required" : "true",
         "placeholder" : "100.00",
-        "description" : "Weekly budget for this tracker"
+        "description" : null
       },
       "email" : {
         "type" : "text",
-        "label" : "Optional Email",
+        "label" : "Optional Email to Notify",
         "value" : "",
         "placeholder" : "your@email.com",
-        "description" : "Email to notify when nearing budget"
+        "description" : null
       }
     },
     "slots" : {
