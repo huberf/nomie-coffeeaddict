@@ -11,7 +11,7 @@
 -->
 <% if(overlimit && goal) { %>
 <div class="hairline-all padding-xs"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwBwAFAgH9XSO6wwAAAABJRU5ErkJggg==" width="100%" height="10" /></div>
-<% } else if(goal) { %><% if(percentTowardGoal>0) { %><div class="bg-white hairline-all"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPkWGr0BwADeQHdTs1z2gAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="10" /></div><% } %><% } %>
+<% } else if(goal) { %><% if(percentTowardGoal>0 && percentTowardGoal < 75) { %><div class="bg-white hairline-all"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPkWGr0BwADeQHdTs1z2gAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="10" /></div><% } else if(percentTowardGoal>74 && percentTowardGoal < 99) { %><div class="bg-white hairline-all"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN83Cj+HwAGRgJ8FVBijgAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="10" /></div><% } %>
 <div class="">
   <div class="nui-list">
     <div class="nui-item">
