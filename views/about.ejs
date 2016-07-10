@@ -1,27 +1,157 @@
 
 <div class="nui-view">
   <div class="nui-header bar-primary">
-    <div class="title truncate">Big Spender. A Nomie Experiment.</div>
+    <div class="title truncate">Weekly Budgets with Nomie</div>
   </div>
-  <br /><Br />
-  <div class="nui-content has-header">
-    <div class="p-a-5">
-      <div class="p-a-2 container">
-        <p class="text-thin text-center text-xl m-b-3">
-          Track your Food Out Spending
-        </p>
-        <div class="col-sm-6 border-r-1">
-          <div class="text-md text-bold text-center m-b-1 text-uppercase">How it works</div>
-          <p>Using <a href="https://nomie.io">Nomie</a>, simply tap "Food Out Cost" and enter the amount you spent. BigSpender will send you a notification when you're coming close to your set limit.</p>
-          <p>This Nomie experience only stores an anonymous id. It simply processes the data as it's sent each and every time, and then purges said data.</p>
+  <div class="nui-content m-t-3">
 
-      </div>
-      <div class="border-b-1 border-t-1 m-b-2 p-a-2 p-t-3 text-center">
-        <p class="text-faded text-uppercase text-bold">Exsiting Nomie user?</p>
+    <div class="p-a-1 bg-primary">
+      <h1 class="text-center m-t-2 m-b-1">Big Spender <br /><span class="text-thin text-lg">Privately track your spending on anything with <a  class="text-white text-bold text-underline" href="https://nomie.io">Nomie</a></span></h1>
+    </div>
+
+    <div class="text-center border-b-1 ">
+      <img src="//snap.icorbin.com/header-graphic-bigspender.png" alt="" style="width:100%; max-width:600px; margin:0 auto;">
+    </div>
+    <div style="max-width:1000px; margin-left:auto; margin-right:auto;">
+      <div class="hidden-sm-down p-a-1"></div>
+      <div class="row " style="">
+      <div class="col-sm-8">
+        <!-- <div class="p-a-1">
+          <h1 class="nui-title">How it works</h1>
+          <ol class="text-thin text-md m-b-2 m-t-2 m-l-0 p-l-2">
+            <li>Install Big Spender</li>
+            <li>Attach the Tracker you want to monitor</li>
+            <li>Set a weekly budget and optional email</li>
+            <li>Monitor your budget anytime and get notified when you're over budget.</li>
+          </ol>
+        </div> -->
+      
+        <div class="nui-list">
+          <div class="nui-item-divider">
+            <label for="" class="text-faded-90">How it Works</label>
+          </div>
+          <div class="nui-item">
+            <div class="nui-item-content">
+              Once installed, Big Spender will monitor your Nomie tracker and alert you when you go over budget.
+              You can also run the app at any time to see the current and previous weeks standings.
+            </div>
+          </div>
+          <div class="nui-item-divider">
+            <label for="" class="text-faded-90">Get Started</label>
+          </div>
+          <div class="nui-item">
+            <div class="nui-item-addon note"><span class="text-lg text-primary">1.</span></div>
+            <div class="nui-item-content">
+              <div class="text-md">Install Nomie</div>
+              <p class=""  style="margin-bottom:4px;">*If you don't already have it, Nomie is free and available for iOS and Android.</p>
+              <a href="http://bit.ly/nomie-ios"  target="_blank" class="btn  p-l-1 p-r-1 btn-sm btn-primary-outline ">
+                iOS
+              </a>
+              <a href="http://bit.ly/nomie-android" target="_blank"  class="btn p-l-1 p-r-1 btn-sm btn-primary-outline ">
+                Android 
+              </a>
+            </div>
+          </div>
+          <div class="nui-item">
+            <div class="nui-item-addon note"><span class="text-lg text-primary">2.</span></div>
+            <div class="nui-item-content">
+              <div class="text-md">Add a Tracker</div>
+              <p>Create your own "Spent Money" tracker, or use one of our pre-configured trackers below.</p>
+            </div>
+
+          </div>
+
+          <div class="nui-item">
+            <div class="nui-item-addon note"><span class="text-lg text-primary">3.</span></div>
+            <div class="nui-item-content">
+              <div class="text-md">Add Big Spender to Nomie</div>
+              <p>Once installed you'll be asked to select a tracker for this instance of Big Spender.</p>
+              <a style="margin-top:4px;" href="nomie://api/join-experiment/<%= experiment.more %>" class="flex-grow-off flex-shrink-off btn p-l-1 p-r-1 btn-sm btn-primary-outline ">
+                Install 
+            </a>
+            </div>
+            
+          </div>
+
+          <div class="nui-item-divider">
+            <label for="">Pre-configured Trackers</label>
+          </div>
+          <div class="nui-item nui-item-icon-left">
+            <div class="nui-item-addon flex-shrink-off nomie-button nomie-button-md m-b-1 m-t-1">
+              <div class="icon-container">
+                <i style="color:#7ABF5A" class="food-cardboard-box-with-chopsticks"></i>
+              </div>
+            </div>
+            <div class="nui-item-content">
+              <label for="">Eating Out Cost</label>
+              <p class="flex-grow m-b-1">
+                Record each time you eat food outside of your house that isn't free.
+              </p>
+              <a href="nomie://api/create/color:7ABF5A/icon:food-cardboard-box-with-chopsticks/label:Eating Out Cost/type:numeric/uom:dollar"
+                class="btn p-l-1 p-r-1 btn-sm btn-primary-outline flex-grow-off nui-item-addon addon-button flex-shrink-off">
+                Add to Nomie 
+              </a>
+            </div>
+            
+          </div>
+          <div class="nui-item nui-item-icon-left">
+            <div class="nui-item-addon flex-shrink-off nomie-button nomie-button-md m-b-1 m-t-1">
+              <div class="icon-container">
+                <i style="color:#32A3E3" class="music-microphone-1"></i>
+              </div>
+            </div>
+            <div class="nui-item-content">
+              <label for="">Entertainment Cost</label>
+              <p class="flex-grow m-b-1">
+                Record each time you do something fun that isn't free.
+              </p>
+              <a href="nomie://api/create/color:32A3E3/icon:music-microphone-1/label:Entertainment Cost/type:numeric/uom:dollar" 
+                class="btn p-l-1 p-r-1 btn-sm btn-primary-outline flex-grow-off nui-item-addon addon-button flex-shrink-off">
+                Add to Nomie 
+              </a>
+            </div>
+          </div>
+          <div class="nui-item-divider">
+            <label for="">Data Retention</label>
+          </div>
+          <div class="nui-item">
+            <div class="nui-item-content">
+              This Cloud App  stores ONLY an anonymous id, the optional email, and the last time a notification was sent. All other data is processed then purged.
+            </div>
+          </div>
+          <div class="nui-item-divider"></div>
+        </div>
+
+        <!-- <div class="p-a-1">
+          <h3>Pre Built Trackers</h3>
+          <p>First install Nomie. Here are a few trackers you can install to get started. <strong>Nomie must be installed first</strong></p>
+          <ul class="text-thin text-md list-unstyled">
+            <li class="p-b-1">Add <a  href="nomie://api/create/color:7ABF5A/icon:food-cardboard-box-with-chopsticks/label:Eating Out Cost/type:numeric/uom:dollar">Eating Out Spend Tracking</a> to Nomie</li>
+            <li class="p-b-1">Add <a  href="nomie://api/create/color:32A3E3/icon:music-microphone-1/label:Entertainment Cost/type:numeric/uom:dollar">Entertainment Spend Tracking</a> to Nomie</li>
+          </ul>
+        </div>
+
+        <div class="p-a-1">
+          <h3>Data Storage</h3>
+          <p>This Cloud App  stores ONLY an anonymous id, the optional email, and the last time a notification was sent. All other data is processed then purged.</p>
+        </div> -->
+                
+<!--         <p class="text-faded text-uppercase text-bold">Exsiting Nomie user?</p>
         <a class="btn btn-lg btn-primary-outline m-b-2" href="nomie://api/code/bigspender">Add BigSpender Channel</a>
         <p class="text-faded text-uppercase text-bold">New to Nomie?</p>
         <p class="text-md text-faded m-t-2"><a href="https://nomie.io">Learn More</a> or simply install <a href="">Nomie for iOS</a> or <a href="">Nomie for Android</a> and use code: <strong>bigspender</strong></p>
+ -->
+      </div> <!-- end main column -->
+      <div class="col-sm-4 p-t-2"> 
+        <img src="//snap.icorbin.com/screenshot-bigspender.png" width="100%">
       </div>
     </div>
-  </div>
+    <div class="p-a-3">
+      <div class="p-t-3 p-b-3 text-center text-sm text-faded">
+          Copyright <%= new Date().getFullYear(); %>. All Rights Reserved. <a href="http://happydata.org">Happy Data, LLC</a>
+      </div>
+    </div>
+
 </div>
+    </div> <!-- end wrapper for full screren -->
+    

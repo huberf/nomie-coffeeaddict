@@ -7,13 +7,10 @@ var Mailer = require('../components/mailer');
 var User = require('../components/user');
 var config = require(__dirname+'/../config');
 
-// *****************************************************
-// Generate the Experiment JSON doc for Nomie to consume
 
-router.get('/', function(req, res, next) {
-
+var getExperimentConfig = function(req) {
   // Determine if we should do HTTPS or not.
-  var protocol = (req.secure) ? 'https://' : 'http://';
+  var protocol = 'http://';
   if(process.env['NODE_ENV']=='production') {
     protocol = 'https://';
   }
@@ -63,7 +60,27 @@ router.get('/', function(req, res, next) {
     }
   };
 
-  res.json(experimentConfiguration);
+  return experimentConfiguration;
+};
+
+
+
+// *****************************************************
+// Generate the Experiment JSON doc for Nomie to consume
+
+router.get('/join', function(req, res, next) {
+
+
+  res.json(getExperimentConfig(req));
+});
+
+
+
+router.get('/', function(req, res, next) {
+  res.render('about', { experiment : getExperimentConfig(req)});
+});
+router.get('/about', function(req, res, next) {
+  res.render('about', { experiment : getExperimentConfig(req)});
 });
 
 /*****************************************************
@@ -355,8 +372,6 @@ router.post('/capture', function(req, res, next) {
 
 });
 
-router.get('/about', function(req, res, next) {
-  res.render('about');
-});
+
 
 module.exports = router;
