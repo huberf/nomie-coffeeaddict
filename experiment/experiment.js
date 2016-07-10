@@ -25,6 +25,7 @@ var getExperimentConfig = function(req) {
     "uses" : ['nickname','geo'], // available: 'nickname','geo'
     "color" : "#E59B81", // Pick a color that works on both black and white backgrounds
     "hostedBy" : "Brandon Corbin",
+    "join" : protocol+req.headers.host+"/join",
     "more" : protocol+req.headers.host+"/about",
     "collection" : {
         "method" : "automatic",
