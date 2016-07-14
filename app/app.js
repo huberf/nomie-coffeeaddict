@@ -92,8 +92,8 @@ router.post('/capture', function(req, res, next) {
         if (!err) {
 
           // Get the Results file and merge it with the results
-          //var file = fs.readFileSync(__dirname + '/views/results.ejs', 'utf8');
-          var rendered = ejs.render('<h1>Hi there</h1>', results);
+          var file = fs.readFileSync(__dirname + '/views/results.ejs', 'utf8');
+          var rendered = ejs.render(file, results);
 
           // Send JSON back to Nomie.
           res.json({
@@ -102,6 +102,8 @@ router.post('/capture', function(req, res, next) {
               good: true
             }
           });
+        } else {
+          console.log("Error processing data", err);
         }
 
       });
