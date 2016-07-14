@@ -102,11 +102,8 @@ router.post('/capture', function(req, res, next) {
               good: true
             }
           });
-        } else {
-          console.log("Error processing data", err);
         }
-
-      });
+      }); // end Processing Data
 
     } // end if they have slots or not.
 

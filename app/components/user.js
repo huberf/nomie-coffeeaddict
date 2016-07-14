@@ -12,11 +12,15 @@
  */
 var redis = require('node-redis');
 var config = require(__dirname+'/../config/all');
-var redisConfig = config.server.dev.redis;
-if(process.env['NODE_ENV']=='production') {
-  redisConfig = config.server.production.redis;
-}
-var storage = redis.createClient(redisConfig.port, redisConfig.host); // create storage
+
+if(config.server.accounts === true) {
+  var redisConfig = config.server.dev.redis;
+  if(process.env['NODE_ENV']=='production') {
+    redisConfig = config.server.production.redis;
+  }
+  var storage = redis.createClient(redisConfig.port, redisConfig.host); // create storage
+} // end if we should store
+
 
 /**
  * User

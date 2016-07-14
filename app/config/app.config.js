@@ -1,4 +1,5 @@
 var cloudConfig = {};
+var serverConfig = require(__dirname+'/server.config.js');
 
 //
 // Pick your Cloud App ID 
@@ -103,25 +104,25 @@ cloudConfig.slots = {
     }
 };
 
-cloudConfig.fields = {
-  // Required Budget / Goal Value
-  "goal" : {
+cloudConfig.fields = {}
+cloudConfig.fields.goal = {
     "type" : "text",
     "label" : "Your Weekly Budget",
     "value" : 75.00,
     "placeholder" : "100.00",
     "description" : null,
-    "required" :  true,
-  },
-  // Optional Email Address
-  "email" : {
+    "required" :  true
+  };
+
+if(serverConfig.notifications) {
+  cloudConfig.fields.email = {
     "type" : "text",
     "label" : "Optional Email to Notify",
     "value" : "",
     "placeholder" : "your@email.com",
     "description" : null
-  }
-};
+  };
+}
 
 //
 // Optional Learn More URL

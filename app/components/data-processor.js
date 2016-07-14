@@ -2,258 +2,315 @@ var User = require(__dirname + '/user');
 var moment = require('moment');
 var fs = require('fs');
 var ejs = require('ejs');
+var config = require(__dirname + '/../config/all');
+
+/*
+
+Process Nomie Data!
+
+This function is what will capture the data from Nomie,
+analyize it some how or another, and turn a JSON response
+to the route - the route will then mash it with the results.ejs
+and send it back to Nomie. 
+
+In the case of this Big Spender App, I am compiling a map of this week and last week, 
+looping over the results and adding up the value for each week and each day. I then
+put all of this together in a big nasty object and return it for results.ejs to consume.
+
+ */
+
+
 
 var processNomieData = function(postData, onComplete) {
-
+  var results = null;
   console.log("### PROCESS DATA ###");
 
-  var user = new User(postData.anonid, function(err, user) {
-    console.log("USER SAVED:: MOVING ON TO PROCESSING RESULTS");
-    try {
-      var daySlotFormat = 'YYYY-MM-DD';
-      var slotName = 'spend';
-      var slot = postData.experiment.slots[slotName]; // Get the Tracker Slot
-      var rows = slot.data || []; // Get Tracker Data
+  // If Notification Is enabled.
+  // We must save the user, check that we havent sent them 
+  // a message, and then send a message if they are over 
+  // and we haven't already sent one this week.
+  if (config.server.notifications!== true) {
+    // No Notications Enabled 
+  // Nothing to do but pass it one.
+    results = generateResults(postData);
+    onComplete(null, results);
+  } else {
 
-      // Determine the users offset by looking at the last records time
-      var offset = postData.timezoneOffset || 0;
-      var createdDate = new Date(postData.created);
-
-      // Set up the base numbers
-      var thisWeekSpend = 0;
-      var lastWeekSpend = 0;
-      var todaySpend = 0;
-      var yesterdaySpend = 0;
-
-      // Get the dates for:
-      // This week, last week, today, yesterday and now
-      var thisWeek = moment().utcOffset(offset).startOf('week').format('W-YYYY'); // eg 51-2016
-      var lastWeek = moment().utcOffset(offset).subtract(1, 'week').startOf('week').format('W-YYYY'); // eg 50-2016
-      var today = moment().utcOffset(offset).format(daySlotFormat); // eg Jan-6th-2016
-      var yesterday = moment().utcOffset(offset).subtract(1, 'day').format(daySlotFormat); // eg Jan-6th-2016
-      var now = moment().utcOffset(offset).format("ddd MMM Do YYYY hh:mma") + ' offset: ' + offset + ' created:' + postData.created + ' typeof: ' + moment(postData.created).utcOffset(offset).format("ddd MMM Do YYYY hh:mma ");
-
-      // Get their email - if they passed it.
-      // We get this field, because in the router.get('/') below, we specify
-      //postData input field as well as a weekly goal.
-      // postData.experiment.info will contain those fields
-      // If the user did provide it, we're going to save it
-
-      var email;
+    var user = new User(postData.anonid, function(err, user) {
+      results = generateResults(postData);
       if (postData.experiment.info.email) {
-        email = postData.experiment.info.email.value || null;
-        if(email) {
+        var email = postData.experiment.info.email.value || null;
+        if (email) {
           console.log("## CAPTURE :: USER PROVIDED EMAIL " + email);
           user.set('email', email);
-          user.save(function() {});
-        }
-      }
+          user.save(function() {
 
-      // Loop over the individual records
-      // Here we will basically tally up the totals based on the week
-      var lastWeekDaily = {};
-      var thisWeekDaily = {};
+            // If we're over the limit 
+            // lets trigger the send Notification Process
+            // it will determine if it already sent it or not.
+            if (results.overlimit) {
+              var slot = postData.experiment.slots[Object.keys(postData.experiment.slots)[0]];
+              sendNotification(user, slot, function(err, response) {
+                // Notification Sent
+              });
+            }
+            // We don't need to wait for the email to send.. 
+            onComplete(null, results);
 
-      var lwloop = moment().startOf('week').subtract(1, 'week');
-      var twloop = moment().startOf('week');
-      var todayDate = moment().utcOffset(offset);
-
-
-      var lastWeekTally = {
-        'sun': 0,
-        'mon': 0,
-        'tue': 0,
-        'wed': 0,
-        'thu': 0,
-        'fri': 0,
-        'sat': 0
-      };
-      var thisWeekTally = {
-        'sun': 0,
-        'mon': 0,
-        'tue': 0,
-        'wed': 0,
-        'thu': 0,
-        'fri': 0,
-        'sat': 0
-      };
-
-
-      // Set up a map for the days for this and last week
-
-      for (var i = 0; i < 7; i++) {
-        lastWeekDaily[lwloop.format(daySlotFormat)] = {
-          value: 0,
-          day: lwloop.format('ddd').toLowerCase()
-        };
-        thisWeekDaily[twloop.format(daySlotFormat)] = {
-          value: 0,
-          day: twloop.format('ddd').toLowerCase()
-        };
-        lwloop.add(1, 'day');
-        twloop.add(1, 'day');
-      }
-
-      console.log("## Made it to line 97");
-
-      //////////////////////////////////////////
-      ///
-      // Loop over each Record! 
-      // Do you Magic Work here. 
-
-      for (var i in rows) {
-        var value = rows[i].value || 0;
-        var rTime = moment(new Date(rows[i].time)).utcOffset(offset);
-        var day = rTime.format(daySlotFormat);
-        var dayShortName = rTime.format('ddd');
-        var week = rTime.startOf('week').format('W-YYYY');
-
-        if (thisWeekDaily.hasOwnProperty(day)) {
-          thisWeekDaily[day].value = thisWeekDaily[day].value + value;
-        }
-        if (lastWeekDaily.hasOwnProperty(day)) {
-          lastWeekDaily[day].value = lastWeekDaily[day].value + value;
-        }
-
-        if (week === thisWeek) {
-          thisWeekSpend = thisWeekSpend + value;
-        }
-        if (week === lastWeek) {
-          lastWeekSpend = lastWeekSpend + value;
-        }
-        if (day === today) {
-          todaySpend = todaySpend + value;
-        }
-        if (day === yesterday) {
-          yesterdaySpend = yesterdaySpend + value;
-        }
-      }
-
-      console.log("## Made it to line 132 end of the loop");
-      //////////////////////////////////////
-      // end looping over rows
-
-
-      // Loop over this week 
-      for (var i in thisWeekDaily) {
-        thisWeekTally[thisWeekDaily[i].day] = thisWeekDaily[i].value;
-      }
-
-      // Loop over last week
-      for (var i in lastWeekDaily) {
-        lastWeekTally[lastWeekDaily[i].day] = lastWeekDaily[i].value;
-      }
-
-      // If the user provided a goal - lets do some
-      // of that goal comparison magic
-      postData.experiment.info.goal = postData.experiment.info.goal || {};
-      postData.experiment.info.goal.value = postData.experiment.info.goal.value || null;
-      var goal = postData.experiment.info.goal.value || 0; // Incase they're stupid
-      if (isNaN(goal)) {
-        goal = 0;
-      };
-
-      console.log("## Made it to line 156");
-
-      // Check to see if we're over the users limit
-      var overlimit = false;
-
-      var lastWeekOverlimit = false;
-
-      if (goal > 0 && thisWeekSpend > goal) {
-        console.log("## CAPTURE :: OVER THE LIMIT!");
-        overlimit = true;
-      }
-
-      if (goal > 0 && lastWeekSpend > goal) {
-        console.log("## CAPTURE :: OVER THE LIMIT!");
-        lastWeekOverlimit = true;
-      }
-
-      // Determine the percent towards the goal
-      var percentTowardGoal = null;
-      if (goal) {
-        percentTowardGoal = ((thisWeekSpend / goal) * 100).toFixed(0);
-      }
-
-      // Create a big old Results object full of awesome stuff.
-      var results = {
-        now: now,
-        thisDay: moment().utcOffset(offset).format('ddd').toLowerCase(),
-        overlimit: overlimit,
-        lastWeekOverlimit: lastWeekOverlimit,
-        goal: goal,
-        email: email,
-        weekStart: moment().utcOffset(offset).startOf('week').format('ddd MMM Do YYYY'),
-        weekEnd: moment().utcOffset(offset).endOf('week').format('ddd MMM Do YYYY'),
-        todaySpend: todaySpend,
-        lastWeekDaily: lastWeekDaily,
-        thisWeekDaily: thisWeekDaily,
-        lastWeekTally: lastWeekTally,
-        thisWeekTally: thisWeekTally,
-        yesterdaySpend: yesterdaySpend,
-        lastWeekSpend: lastWeekSpend,
-        percentTowardGoal: percentTowardGoal,
-        thisWeek: thisWeek,
-        experiment: postData.experiment,
-        thisWeekSpend: thisWeekSpend
-      };
-
-
-      ///////////////////////////////////////////////////////////////
-      // If the user is over the limit, and they provided an email
-      // we're going to send them an email!
-
-      if (overlimit && email) {
-        var lastMessageKey = 'lastMessage-' + slot.tracker._id;
-        var emailTemplate = fs.readFileSync(__dirname + '/../views/email.ejs', 'utf8');
-        var emailRendered = ejs.render(emailTemplate, results);
-
-        var time = user.get(lastMessageKey);
-        var sendMail = true;
-
-        if (!time) {
-          console.log("## CAPTURE :: NO EMAIL SENT THIS WEEK - SEND");
-          sendMail = true;
-        } else {
-          if (moment(time).utcOffset(offset).startOf('week').format('ddd MMM Do YYYY') == results.weekStart) {
-            console.log("## CAPTURE :: DON'T SEND EMAIL - ALREADY SENT", err, time);
-            sendMail = false;
-          }
-        }
-        if (sendMail) {
-          console.log("## CAPTURE :: SENDING THE EMAIL...");
-          var mailer = new Mailer();
-          user.set(lastMessageKey, new Date()).save();
-          mailer.to(email)
-            .subject(slot.tracker.label + " over Limit!")
-            .body(emailRendered)
-            .send(function(err, response) {
-              console.log("## CAPTURE :: EMAIL SENT");
-              console.log(err, response);
-            });
-        }
-
-      }
-      ///////////////////////////////////////////////////////////
-      // end if over limit and we're to email them.
-
-      onComplete(null, results);
-
-    } catch (e) {
-
-      /////////////////////////////////////////////////
-      /// Error has Occurred 
-      /// 
-
-      onComplete({
-        success: false,
-        error: e,
-        message: e.message
-      }, null);
-    } // end try catch
-
-  }); // end look up user
+          });
+        } // end if they provided an email
+      } // end if this request has an email node.
+    });
+  } // end if notifications or not. 
 };
+
+/**
+ * Generate the total Results for this Request
+ * @param  {object} postData The post data from Nomie
+ * @return {object}          Results
+ */
+var generateResults = function(postData) {
+  var daySlotFormat = 'YYYY-MM-DD';
+
+  postData.experiment.info.email = postData.experiment.info.email || {};
+  var email = postData.experiment.info.email.value || null;
+  // Single Slot Instance
+  // Since this cloud app only uses a single slot, I can call it from here. 
+  var slotName = Object.keys(postData.experiment.slots)[0];
+  var slot = postData.experiment.slots[slotName]; // Get the Tracker Slot
+
+  // Get the Data from this tracker
+  var rows = slot.data || []; // Get Tracker Data
+
+  // Determine the users offset by looking at the last records time
+  var offset = postData.timezoneOffset || 0;
+  var createdDate = new Date(postData.created);
+
+  // Set up the base numbers
+  var thisWeekSpend = 0;
+  var lastWeekSpend = 0;
+  var todaySpend = 0;
+  var yesterdaySpend = 0;
+
+  // Get the dates for:
+  // This week, last week, today, yesterday and now
+  var thisWeek = moment().utcOffset(offset).startOf('week').format('W-YYYY'); // eg 51-2016
+  var lastWeek = moment().utcOffset(offset).subtract(1, 'week').startOf('week').format('W-YYYY'); // eg 50-2016
+  var today = moment().utcOffset(offset).format(daySlotFormat); // eg Jan-6th-2016
+  var yesterday = moment().utcOffset(offset).subtract(1, 'day').format(daySlotFormat); // eg Jan-6th-2016
+  var now = moment().utcOffset(offset).format("ddd MMM Do YYYY hh:mma") + ' offset: ' + offset + ' created:' + postData.created + ' typeof: ' + moment(postData.created).utcOffset(offset).format("ddd MMM Do YYYY hh:mma ");
+
+  // Get their email - if they passed it.
+  // We get this field, because in the router.get('/') below, we specify
+  //postData input field as well as a weekly goal.
+  // postData.experiment.info will contain those fields
+  // If the user did provide it, we're going to save it
+
+
+
+  // Loop over the individual records
+  // Here we will basically tally up the totals based on the week
+  var lastWeekDaily = {};
+  var thisWeekDaily = {};
+
+  // UTC Offset
+  // You will see the use of offset, this is a value that is passed from the user
+  // you should adjust your times accordingly if you will be displaying anything back to them.
+  // otherwise, you will show them dates for which your server time is configured.
+
+  // Create Last Week Loop Counter
+  var lwloop = moment().utcOffset(offset).startOf('week').subtract(1, 'week');
+  // Create This Week Loop Counter
+  var twloop = moment().utcOffset(offset).startOf('week');
+  // Get Time of Day
+  var todayDate = moment().utcOffset(offset);
+
+  var lastWeekTally = {
+    'sun': 0,
+    'mon': 0,
+    'tue': 0,
+    'wed': 0,
+    'thu': 0,
+    'fri': 0,
+    'sat': 0
+  };
+  var thisWeekTally = {
+    'sun': 0,
+    'mon': 0,
+    'tue': 0,
+    'wed': 0,
+    'thu': 0,
+    'fri': 0,
+    'sat': 0
+  };
+
+
+  // Set up a map for the days for this and last week
+
+  for (var i = 0; i < 7; i++) {
+    lastWeekDaily[lwloop.format(daySlotFormat)] = {
+      value: 0,
+      day: lwloop.format('ddd').toLowerCase()
+    };
+    thisWeekDaily[twloop.format(daySlotFormat)] = {
+      value: 0,
+      day: twloop.format('ddd').toLowerCase()
+    };
+    lwloop.add(1, 'day');
+    twloop.add(1, 'day');
+  }
+
+  //////////////////////////////////////////
+  ///
+  // Loop over each Record! 
+  // Do you Magic Work here. 
+
+  for (var i in rows) {
+    var value = rows[i].value || 0;
+    var rTime = moment(new Date(rows[i].time)).utcOffset(offset);
+    var day = rTime.format(daySlotFormat);
+    var dayShortName = rTime.format('ddd');
+    var week = rTime.startOf('week').format('W-YYYY');
+
+    if (thisWeekDaily.hasOwnProperty(day)) {
+      thisWeekDaily[day].value = thisWeekDaily[day].value + value;
+    }
+    if (lastWeekDaily.hasOwnProperty(day)) {
+      lastWeekDaily[day].value = lastWeekDaily[day].value + value;
+    }
+
+    if (week === thisWeek) {
+      thisWeekSpend = thisWeekSpend + value;
+    }
+    if (week === lastWeek) {
+      lastWeekSpend = lastWeekSpend + value;
+    }
+    if (day === today) {
+      todaySpend = todaySpend + value;
+    }
+    if (day === yesterday) {
+      yesterdaySpend = yesterdaySpend + value;
+    }
+  }
+
+
+  //////////////////////////////////////
+  // end looping over rows
+
+
+  // Loop over this week 
+  for (var i in thisWeekDaily) {
+    thisWeekTally[thisWeekDaily[i].day] = thisWeekDaily[i].value;
+  }
+
+  // Loop over last week
+  for (var i in lastWeekDaily) {
+    lastWeekTally[lastWeekDaily[i].day] = lastWeekDaily[i].value;
+  }
+
+  // If the user provided a goal - lets do some
+  // of that goal comparison magic
+  postData.experiment.info.goal = postData.experiment.info.goal || {};
+  postData.experiment.info.goal.value = postData.experiment.info.goal.value || null;
+  var goal = postData.experiment.info.goal.value || 0; // Incase they're stupid
+  if (isNaN(goal)) {
+    goal = 0;
+  };
+
+  console.log("## Made it to line 156");
+
+  // Check to see if we're over the users limit
+  var overlimit = false;
+
+  var lastWeekOverlimit = false;
+
+  if (goal > 0 && thisWeekSpend > goal) {
+    console.log("## CAPTURE :: OVER THE LIMIT!");
+    overlimit = true;
+  }
+
+  if (goal > 0 && lastWeekSpend > goal) {
+    console.log("## CAPTURE :: OVER THE LIMIT!");
+    lastWeekOverlimit = true;
+  }
+
+  // Determine the percent towards the goal
+  var percentTowardGoal = null;
+  if (goal) {
+    percentTowardGoal = ((thisWeekSpend / goal) * 100).toFixed(0);
+  }
+
+  // Create a big old Results object full of awesome stuff.
+  var results = {
+    now: now,
+    thisDay: moment().utcOffset(offset).format('ddd').toLowerCase(),
+    overlimit: overlimit,
+    lastWeekOverlimit: lastWeekOverlimit,
+    goal: goal,
+    email: email,
+    weekStart: moment().utcOffset(offset).startOf('week').format('ddd MMM Do YYYY'),
+    weekEnd: moment().utcOffset(offset).endOf('week').format('ddd MMM Do YYYY'),
+    todaySpend: todaySpend,
+    lastWeekDaily: lastWeekDaily,
+    thisWeekDaily: thisWeekDaily,
+    lastWeekTally: lastWeekTally,
+    thisWeekTally: thisWeekTally,
+    yesterdaySpend: yesterdaySpend,
+    lastWeekSpend: lastWeekSpend,
+    percentTowardGoal: percentTowardGoal,
+    thisWeek: thisWeek,
+    experiment: postData.experiment,
+    thisWeekSpend: thisWeekSpend
+  };
+
+  return results;
+};
+
+/**
+ * Send Notification
+ * This will only be triggered if account:true is configured in the server.config.js file.
+ *
+ * @param  {object}   user     User Object
+ * @param  {object}   slot     Specific Slot - used for keeping track of the last message sent for this specific tracker
+ * @param  {Function} callback err,results design pattern
+ */
+var sendNotification = function(user, slot, callback) {
+
+  var lastMessageKey = 'lastMessage-' + slot.tracker._id;
+  var emailTemplate = fs.readFileSync(__dirname + '/../views/email.ejs', 'utf8');
+  var emailRendered = ejs.render(emailTemplate, results);
+
+  var time = user.get(lastMessageKey);
+  var sendMail = true;
+
+  if (!time) {
+    console.log("## CAPTURE :: NO EMAIL SENT THIS WEEK - SEND");
+    sendMail = true;
+  } else {
+    if (moment(time).utcOffset(offset).startOf('week').format('ddd MMM Do YYYY') == results.weekStart) {
+      console.log("## CAPTURE :: DON'T SEND EMAIL - ALREADY SENT", err, time);
+      sendMail = false;
+    }
+  }
+  if (sendMail) {
+    console.log("## CAPTURE :: SENDING THE EMAIL...");
+
+    var mailer = new Mailer();
+    user.set(lastMessageKey, new Date()).save();
+
+    mailer.to(postData.experiment.info.email.value)
+      .subject(slot.tracker.label + " over Limit!")
+      .body(emailRendered)
+      .send(function(err, response) {
+        console.log("## CAPTURE :: EMAIL SENT");
+        console.log(err, response);
+        callback(err, response);
+      });
+  }
+
+
+}; // end Send Notification
+
+
 
 module.exports = processNomieData;

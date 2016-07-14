@@ -1,9 +1,10 @@
 // 
 // Setup this Cloud Apps Base Server Configuration
-// You'll need to have REDIS installed somewhere for this Cloud App to work with User Data. 
-// http://redis.io/
+// If you want to send emails, (accounts: true) You'll need to have REDIS installed somewhere for this Cloud App to work. 
+// Otherwise set accounts: false, and no emails will be sent.  
 
 var ServerConfig = {
+  "notifications" : false, // if sent to true, you must have smtp and redis configured properly. 
   "dev" : {
     "url" : "http://localhost:5000",
     "redis" : {

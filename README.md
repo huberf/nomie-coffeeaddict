@@ -1,7 +1,25 @@
-# BigSpender Nomie Experiment (Node.js)
+# Nomie Cloud App Example - Big Spender
 
-Hi! I'm [Brandon](https://twitter.com/corbinux) and this is BigSpender - the first [Nomie](https://nomie.io) Experiment you can run on your own server. I created BigSpender to keep tracker of how much money I was spending "eating out". I hope this repo is a good starting template for you to build new types of experiments and analysis using Nomie data.
+This repo is for Big Spender, a Nomie Cloud App that is currently available in the Nomie Market. 
+The purpose of repo is to give those who want to build their own Cloud Apps a NodeJS based starting point. 
 
-## What is Nomie?
+This Cloud App Requires:
 
-Nomie was originally build as my personal behavior tracker, but over time has turned into a gener
+- Node JS
+- Redis
+
+### Installing
+
+```
+git clone https://github.com/happydata/bigspender.git
+cd bigspender
+npm install
+```
+
+### Configuring 
+Before you can run Big Spender, you'll need to ensure you have Redis running. 
+
+#### /app/config/server.config.js
+
+
+#### /app/config/app.config.js

@@ -11,12 +11,12 @@ var express = require('express'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
     ejsLayouts = require("express-ejs-layouts"),
-    serverConfig = require(__dirname + '/app/config/server'),
+    config = require(__dirname + '/app/config/all'),
     app = express();
 
 // Set limits for uploading data.
-app.use(bodyParser.json({ limit: serverConfig.server.maxUpload }));
-app.use(bodyParser.urlencoded({ limit: serverConfig.server.maxUpload, extended: true }));
+app.use(bodyParser.json({ limit: config.server.server.maxUpload }));
+app.use(bodyParser.urlencoded({ limit: config.server.server.maxUpload, extended: true }));
 app.use(cookieParser());
 // Set up EJS and Views
 app.use(ejsLayouts);
@@ -78,8 +78,8 @@ app.use(function(err, req, res, next) {
 });
 
 /// Set the Port
-app.listen(serverConfig.server.port, function() {
-    console.log('Example app listening on port ' + serverConfig.server.port);
+app.listen(config.server.server.port, function() {
+    console.log('Example app listening on port ' + config.server.server.port);
 });
 
 process.on('uncaughtException', function(error) {
