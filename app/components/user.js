@@ -11,10 +11,10 @@
  * Setup Redis Storage.
  */
 var redis = require('node-redis');
-var config = require(__dirname+'/../config');
-var redisConfig = config['dev'].redis;
+var config = require(__dirname+'/../config/all');
+var redisConfig = config.server.dev.redis;
 if(process.env['NODE_ENV']=='production') {
-  redisConfig = config['production'].redis;
+  redisConfig = config.server.production.redis;
 }
 var storage = redis.createClient(redisConfig.port, redisConfig.host); // create storage
 
@@ -23,31 +23,39 @@ var storage = redis.createClient(redisConfig.port, redisConfig.host); // create 
  *
  * Create a generic user object that uses Redis storage
  *
+ * var user = new User('234-321-2234', function(err, userData) {
+ *   if(!err) {
+ *     console.log(userData);
+ *   }
+ * });
+ *
  * @param  {string} anonid Anonid from req.body.anonid
- * @param  {function} onInit Callback in the err,data format
+ * @param  {function} onLoaded Callback in the err,data format
  * @return {object}        User pub
  */
-var User = function(anonid, onInit) {
-  onInit = onInit || function() {}; // set a default
+var User = function(anonid, onLoaded) {
+  onLoaded = onLoaded || function() {}; // set a default
   var pvt = { anonid : anonid }; // Private Stuffs
   var pub = {}; // Public Stuffs
   var data = {}; // User Data Stuffs
-  var key = redisConfig.prefix+pvt.anonid; // Set key for storage.
 
+
+  pub.anonid = redisConfig.prefix+pvt.anonid;
+  
   /**
-   * Initialize a User : Private
-   * @return {object} Pub
+   * Internal Init will get the user from redis if it exists.
+   * @return {[type]} [description]
    */
   pvt.init = function() {
-    storage.get(key, function(err, record) {
+    
+    storage.get(pub.anonid, function(err, record) {
       if(!err && record != null) {
         data = JSON.parse(record);
-        console.log("We got someting!!!", data);
-        onInit(null, pub);
+        onLoaded(null, pub);
       } else {
         // We didn't find a user
-        console.log("Nothing found with key", key);
-        onInit(err, pub);
+        console.log("Nothing found with key", pub.anonid);
+        onLoaded(err, pub);
       }
     });
   }
@@ -64,9 +72,10 @@ var User = function(anonid, onInit) {
   // Save to Storage
   pub.save = function(callback) {
     callback = callback || function() {};
-    console.log("USER :: Save");
     data._updated = new Date();
-    storage.set(redisConfig.prefix+pvt.anonid, JSON.stringify(data), function(err, res) {
+    data._created = data._created || new Date();
+    // Save to Redis
+    storage.set(pub.anonid, JSON.stringify(data), function(err, res) {
       console.log("USER :: Save", err, res);
       callback(err, res);
     });

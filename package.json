@@ -30,6 +30,7 @@
     "path": "^0.12.7",
     "redis": "^2.6.1",
     "serve-favicon": "^2.3.0",
-    "thinky": "^2.3.2"
+    "thinky": "^2.3.2",
+    "underscore": "^1.8.3"
   }
 }
