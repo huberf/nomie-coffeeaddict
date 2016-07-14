@@ -97,7 +97,7 @@ router.post('/capture', function(req, res, next) {
 
           // Send JSON back to Nomie.
           res.json({
-            html: results.html,
+            html: rendered,
             results: {
               good: true
             }

@@ -42,9 +42,11 @@ var processNomieData = function(postData, onComplete) {
       var email;
       if (postData.experiment.info.email) {
         email = postData.experiment.info.email.value || null;
-        console.log("## CAPTURE :: USER PROVIDED EMAIL " + email);
-        user.set('email', email);
-        user.save(function() {});
+        if(email) {
+          console.log("## CAPTURE :: USER PROVIDED EMAIL " + email);
+          user.set('email', email);
+          user.save(function() {});
+        }
       }
 
       // Loop over the individual records
@@ -92,6 +94,8 @@ var processNomieData = function(postData, onComplete) {
         twloop.add(1, 'day');
       }
 
+      console.log("## Made it to line 97");
+
       //////////////////////////////////////////
       ///
       // Loop over each Record! 
@@ -124,6 +128,8 @@ var processNomieData = function(postData, onComplete) {
           yesterdaySpend = yesterdaySpend + value;
         }
       }
+
+      console.log("## Made it to line 132 end of the loop");
       //////////////////////////////////////
       // end looping over rows
 
@@ -140,10 +146,14 @@ var processNomieData = function(postData, onComplete) {
 
       // If the user provided a goal - lets do some
       // of that goal comparison magic
+      postData.experiment.info.goal = postData.experiment.info.goal || {};
+      postData.experiment.info.goal.value = postData.experiment.info.goal.value || null;
       var goal = postData.experiment.info.goal.value || 0; // Incase they're stupid
       if (isNaN(goal)) {
         goal = 0;
       };
+
+      console.log("## Made it to line 156");
 
       // Check to see if we're over the users limit
       var overlimit = false;
