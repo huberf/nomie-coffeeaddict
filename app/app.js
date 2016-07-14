@@ -28,6 +28,11 @@ router.get('/join', function(req, res, next) {
   res.send(config.app.get(config.server.getActive().url));
 });
 
+router.get('/', function(req, res, next) {
+  res.render('about', { cloudApp : config.app.get(config.server.getActive().url) });
+});
+
+
 
 //
 // TEST Route
@@ -66,7 +71,6 @@ router.post('/capture', function(req, res, next) {
     req.body.experiment.info.email = req.body.experiment.info.email || null;
 
     if (!req.body.experiment.slots) {
-
       //
       // Missing Slots
       // Possible this is not a valid request. 
