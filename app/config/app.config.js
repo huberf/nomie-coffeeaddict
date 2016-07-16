@@ -55,7 +55,7 @@ cloudConfig.summary = "Monitor your spending! BigSpender helps keep track of how
 // This color will be used in Nomie to help your App standout
 // Make sure the color isn't too light. 
 
-cloudConfig.color = "#E59B81";
+cloudConfig.color = "#CD704C";
 
 // 
 // Determine what data this cloud app requires
@@ -80,7 +80,7 @@ cloudConfig.collection_method = "automatic";
 // Options are 1mm (minutes), 1h (hour), 1d (day), 1m (month)
 // For example: 60mm will check every 60 minutes or the next time the user launches Nomie.
 
-cloudConfig.collection_frequency = "1mm"; // capture every 6 hours - if automated
+cloudConfig.collection_frequency = "30mm"; // capture every 6 hours - if automated
 
 //
 // Collection Amount 
