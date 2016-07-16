@@ -9,20 +9,26 @@
   better documentation setup for all the available class names.
 
 -->
-<% if(overlimit && goal) { %>
-<img src="<%=config.server.getActive().url %>/banner-over.svg" width="100%" />
-<div class="padding-sm-bottom"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwBwAFAgH9XSO6wwAAAABJRU5ErkJggg==" width="100%" height="20" /></div>
-<% } else if(goal) { %>
-<% if(percentTowardGoal>0 && percentTowardGoal < 61) { %>
-<img src="<%=config.server.getActive().url %>/banner-under.svg" width="100%" />
-<div class="padding-sm-bottom"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPkWGr0BwADeQHdTs1z2gAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="20" /></div>
-<% } else if(percentTowardGoal>60 && percentTowardGoal < 99) { %>
-<img src="<%=config.server.getActive().url %>/banner-warning.svg" width="100%" />
-<div class="padding-sm-bottom"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN83Cj+HwAGRgJ8FVBijgAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="20" /></div>
-<% } %>
-<% } %>
 <div class="">
   <div class="nui-list">
+    <div class="text-center">
+      <% if(overlimit && goal) { %>
+      <img src="<%=config.server.getActive().url %>/banner-over.svg" width="100%" />
+      <div class="nui-item-divider hairline-off"></div>
+      <img class="hairline-all border-radius" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwBwAFAgH9XSO6wwAAAABJRU5ErkJggg==" width="100%" height="20" />
+    <% } else if(goal) { %>
+      <% if(percentTowardGoal>0 && percentTowardGoal < 61) { %>
+      <img src="<%=config.server.getActive().url %>/banner-under.svg" width="100%" />
+       <div class="nui-item-divider  hairline-off"></div>
+      <img class="hairline-all border-radius" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPkWGr0BwADeQHdTs1z2gAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="20" />
+      <% } else if(percentTowardGoal>60 && percentTowardGoal < 99) { %>
+      <img src="<%=config.server.getActive().url %>/banner-warning.svg" width="100%" />
+      <div class="nui-item-divider  hairline-off"></div>
+      <img class="hairline-all border-radius" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN83Cj+HwAGRgJ8FVBijgAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="20" />
+      <% } %>
+      <div class="nui-item-divider hairline-off"></div>
+    <% } %>
+    </div>
     <div class="nui-item">
       <div class="nui-item-addon nomie-button nomie-button-md">
         
@@ -75,8 +81,8 @@
   
 
     <div class="nui-item  padding-sm-bottom">
-      <div class="nui-item-content text-faded-20 width-33 flex-shrink-off flex-grow-off">
-        TOTALS
+      <div class="nui-item-content text-faded width-33 flex-shrink-off flex-grow-off">
+        Totals
       </div>
       <div class="nui-item-content text-right width-33 text-bold flex-shrink-off flex-grow-off " >
         <div class="text-bold text-sm <% if(lastWeekOverlimit) { %>text-red<% } else { %> text-green <% } %> ">Last Week</div>
@@ -107,8 +113,25 @@
     </div>
     <% } %>
     <div class="nui-item-divider"></div>
-
     
+
+    <% if(overlimit && goal) { %>
+    <div class="nui-item text-red text-center" href="nomie://api/share/I went over my weekly '<%= experiment.slots.spend.tracker.label %>' budget by <%= (goal - thisWeekSpend).toFixed(2) %> @nomieApp">
+      <div class="nui-item-content text-center text-red">
+        Share...
+      </div>
+      
+    </div>
+    <% } else if(goal) { %>
+    <div class="nui-item text-center" href="nomie://api/share/I am still <%= (goal - thisWeekSpend).toFixed(2) %> under my weekly '<%= experiment.slots.spend.tracker.label %>' budget! @nomieApp">
+      <div class="nui-item-content text-center">
+        Share this Success...
+      </div>
+    </div>
+    <% } %>
+
+
+    <div class="nui-item-divider"></div>
 
     <div class="nui-item">
       <div class="nui-item-content">
