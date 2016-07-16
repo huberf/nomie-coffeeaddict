@@ -47,9 +47,6 @@ app.use('/', cloudApp);
 
 
 
-
-
-
 // EVERYTHING ELSE
 
 app.use(function(req, res, next) {

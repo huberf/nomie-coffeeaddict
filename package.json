@@ -1,7 +1,7 @@
 {
-  "name": "bigspender.nomie.org",
+  "name": "cloudapp-bigspender",
   "version": "1.0.0",
-  "description": "Weekly Spend Tracker",
+  "description": "Nomie's Big Spend Cloud App",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,11 +9,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/brandoncorbin/experiments.nomie.io.git"
+    "url": "https://github.com/happydata/cloudapp-bigspender.git"
   },
   "author": "Brandon Corbin",
   "license": "MIT",
-  "homepage": "https://bitbucket.org/brandoncorbin/experiments.nomie.io#readme",
+  "homepage": "https://github.com/happydata/cloudapp-bigspender",
   "dependencies": {
     "body-parser": "^1.15.0",
     "cookie-parser": "^1.4.1",

@@ -76,7 +76,7 @@ module.exports = function() {
 				"geo": [39.562, -86.0563],
 				"time": start.toDate(),
 				"offset": -240,
-				"value": 10,
+				"value": 20,
 				"charge": 2
 			};
 			events.push(event);

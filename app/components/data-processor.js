@@ -22,46 +22,45 @@ put all of this together in a big nasty object and return it for results.ejs to 
 
 
 var processNomieData = function(postData, onComplete) {
-  var results = null;
+  
   console.log("### PROCESS DATA ###");
 
-  // If Notification Is enabled.
-  // We must save the user, check that we havent sent them 
-  // a message, and then send a message if they are over 
-  // and we haven't already sent one this week.
-  if (config.server.notifications!== true) {
-    // No Notications Enabled 
-  // Nothing to do but pass it one.
-    results = generateResults(postData);
-    onComplete(null, results);
-  } else {
+  var results = generateResults(postData);
+  onComplete(null, results);
 
-    var user = new User(postData.anonid, function(err, user) {
-      results = generateResults(postData);
-      if (postData.experiment.info.email) {
-        var email = postData.experiment.info.email.value || null;
-        if (email) {
-          console.log("## CAPTURE :: USER PROVIDED EMAIL " + email);
-          user.set('email', email);
-          user.save(function() {
+  // if (config.server.notifications!== true) {
+  //   // No Notications Enabled 
+  // // Nothing to do but pass it one.
+  //   results = generateResults(postData);
+  //   onComplete(null, results);
+  // } else {
 
-            // If we're over the limit 
-            // lets trigger the send Notification Process
-            // it will determine if it already sent it or not.
-            if (results.overlimit) {
-              var slot = postData.experiment.slots[Object.keys(postData.experiment.slots)[0]];
-              sendNotification(user, slot, function(err, response) {
-                // Notification Sent
-              });
-            }
-            // We don't need to wait for the email to send.. 
-            onComplete(null, results);
+  //   var user = new User(postData.anonid, function(err, user) {
+  //     results = generateResults(postData);
+  //     if (postData.experiment.info.email) {
+  //       var email = postData.experiment.info.email.value || null;
+  //       if (email) {
+  //         console.log("## CAPTURE :: USER PROVIDED EMAIL " + email);
+  //         user.set('email', email);
+  //         user.save(function() {
 
-          });
-        } // end if they provided an email
-      } // end if this request has an email node.
-    });
-  } // end if notifications or not. 
+  //           // If we're over the limit 
+  //           // lets trigger the send Notification Process
+  //           // it will determine if it already sent it or not.
+  //           if (results.overlimit) {
+  //             var slot = postData.experiment.slots[Object.keys(postData.experiment.slots)[0]];
+  //             sendNotification(user, slot, function(err, response) {
+  //               // Notification Sent
+  //             });
+  //           }
+  //           // We don't need to wait for the email to send.. 
+  //           onComplete(null, results);
+
+  //         });
+  //       } // end if they provided an email
+  //     } // end if this request has an email node.
+  //   });
+  //} // end if notifications or not. 
 };
 
 /**
@@ -72,8 +71,11 @@ var processNomieData = function(postData, onComplete) {
 var generateResults = function(postData) {
   var daySlotFormat = 'YYYY-MM-DD';
 
-  postData.experiment.info.email = postData.experiment.info.email || {};
-  var email = postData.experiment.info.email.value || null;
+//  postData.experiment.info.email = postData.experiment.info.email || {};
+  var email;
+  if( postData.experiment.info.hasOwnProperty('email')) {
+    email = postData.experiment.info.email.value || null;
+  }
   // Single Slot Instance
   // Since this cloud app only uses a single slot, I can call it from here. 
   var slotName = Object.keys(postData.experiment.slots)[0];

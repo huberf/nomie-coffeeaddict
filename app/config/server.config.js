@@ -7,6 +7,7 @@ var ServerConfig = {
   "notifications" : false, // if sent to true, you must have smtp and redis configured properly. 
   "dev" : {
     "url" : "http://localhost:5000",
+    "storage" : "localhost",
     "redis" : {
       "host" : "192.168.99.100",
       "port" : "32775",
@@ -16,6 +17,7 @@ var ServerConfig = {
   },
   "production" : {
     "url" : "https://bigspender.nomie.org",
+    "storage" : "redis",
     "redis" : {
       "host" : "dokku-redis-bigspender",
       "port" : "6379",

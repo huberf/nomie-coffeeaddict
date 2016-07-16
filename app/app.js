@@ -2,7 +2,8 @@ var express = require('express'),
   router = express.Router(),
   ejs = require('ejs'),
   fs = require('fs'),
-  moment = require('moment');
+  moment = require('moment'),
+  User = require(__dirname + '/components/user');
 
 //
 // Load the Config
@@ -29,10 +30,10 @@ router.get('/join', function(req, res, next) {
 });
 
 router.get('/', function(req, res, next) {
-  res.render('about', { cloudApp : config.app.get(config.server.getActive().url) });
+  res.render('about', {
+    cloudApp: config.app.get(config.server.getActive().url)
+  });
 });
-
-
 
 //
 // TEST Route
@@ -57,9 +58,11 @@ router.get('/test', function(req, res, next) {
 // 
 // This is the Main Capture route. It is fired when a user runs the Cloud App
 // or the schedule is triggered 
+// 
+
 
 router.post('/capture', function(req, res, next) {
-
+  var user;
   try {
     console.log("## CAPTURE :: START");
     var results = {};
@@ -68,9 +71,11 @@ router.post('/capture', function(req, res, next) {
     req.body = req.body || {};
     req.body.experiment = req.body.experiment || {};
     req.body.experiment.info = req.body.experiment.info || {};
-    req.body.experiment.info.email = req.body.experiment.info.email || null;
+    req.body.timezonOffset = req.body.timezonOffset || '-240';
+    // req.body.experiment.info.email = req.body.experiment.info.email || null;
 
-    if (!req.body.experiment.slots) {
+    if (!req.body.experiment.slots || !req.body.anonid) {
+
       //
       // Missing Slots
       // Possible this is not a valid request. 
@@ -82,28 +87,74 @@ router.post('/capture', function(req, res, next) {
           message: "No Slots were passed"
         },
       });
+
     } else {
+      var slotId = "spend";
+      var spenderSlot = req.body.experiment.slots[slotId]; // get the first slot - in the BigSPender, it's case the only slot called "spend"
 
-      // 
-      // Everything is in order. 
-      // Let's process the results 
-      // 
-      DataProcessor(req.body, function(err, results) {
-        if (!err) {
+      user = new User(req.body.anonid, function(err, thisUser) {
 
-          // Get the Results file and merge it with the results
-          var file = fs.readFileSync(__dirname + '/views/results.ejs', 'utf8');
-          var rendered = ejs.render(file, results);
+        var isNewUser = (err) ? true : false; // is this a new user or not. If an error exists then we didnt find it in the storage unit.
 
-          // Send JSON back to Nomie.
-          res.json({
-            html: rendered,
-            results: {
-              good: true
-            }
-          });
-        }
-      }); // end Processing Data
+        // 
+        // Everything is in order - let's process the results.
+        // If the user is over the limit, we will FORCE show the modal
+        // one time, and ONLY one time. Don't be a dick and force show the results
+        // a bunch.
+        // 
+        // If we haven't notified them of being over the limit this week
+        // 
+        // 
+        DataProcessor(req.body, function(dataError, results) {
+          var forceShow = false;
+          if (!dataError) {
+
+            // Get the Results file and merge it with the results
+            var file = fs.readFileSync(__dirname + '/views/results.ejs', 'utf8');
+            var rendered = ejs.render(file, results);
+
+            // Is the user of their limit?
+            if (results.overlimit == true) {
+              if (isNewUser) {
+                // New User - lets see if they are already over the limit
+                // if so, lets force show the modal to alert them. 
+                forceShow = true;
+              } else {
+                // Existing User
+                var lastMessage = thisUser.get(spenderSlot.tracker._id + '-message-on');
+                if (!lastMessage) {
+                  // No message for this slot and week. 
+                  forceShow = true;
+                } else {
+                  var weekStart = moment().utcOffset(req.body.timezonOffset).startOf('week').format('MMM Do YYYY');
+                  if (moment(lastMessage).utcOffset(req.body.timezonOffset).startOf('week').format('MMM Do YYYY') != weekStart) {
+                    console.log("## CAPTURE :: DON'T SEND EMAIL - ALREADY SENT", err, time);
+                    forceShow = true;
+                  }
+
+                }
+              }
+
+              // If we're going to force show this, lets save
+              // that we did, this way we only show it one time 
+              // for each week.
+              if (forceShow) {
+                thisUser.set(spenderSlot.tracker._id + '-message-on', moment().utcOffset(req.body.timezonOffset).toDate());
+                thisUser.save(function(err, results) {});
+              } // end updating user last message time for this lot. 
+            } // end if over limit
+
+            // Send JSON back to Nomie.
+            res.json({
+              forceShow: forceShow,
+              html: rendered
+              // url : 'http://localhost:5000/results/details?id='+req.body.anonid, // HTML or URL can be used, but not both. URL will open a users browser on their device.
+            });
+          }
+        }); // end Processing Data
+
+      }); // end User Data Loading.
+
 
     } // end if they have slots or not.
 

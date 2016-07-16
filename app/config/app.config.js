@@ -25,7 +25,6 @@ var limit_one_per_user = false;
 
 cloudConfig.name = "Big Spender";
 
-
 //
 // Who's the Owner of this Cloud App?
 // 
@@ -37,7 +36,10 @@ cloudConfig.hostedBy = "Brandon Corbin";
 // Cloud App Image
 //
 // Include a full URL to your cloud app image.
-cloudConfig.img = "https://snap.icorbin.com/bigspender-cover-2.jpg";
+// Otherwise, it will default to the album are in /public/album.jpg
+
+// cloudConfig.img = "https://snap.icorbin.com/bigspender-cover-2.jpg";
+
 
 //
 // Your Cloud App Summary 
@@ -78,7 +80,7 @@ cloudConfig.collection_method = "automatic";
 // Options are 1mm (minutes), 1h (hour), 1d (day), 1m (month)
 // For example: 60mm will check every 60 minutes or the next time the user launches Nomie.
 
-cloudConfig.collection_frequency = "1h"; // capture every 6 hours - if automated
+cloudConfig.collection_frequency = "1mm"; // capture every 6 hours - if automated
 
 //
 // Collection Amount 
@@ -106,23 +108,28 @@ cloudConfig.slots = {
 
 cloudConfig.fields = {}
 cloudConfig.fields.goal = {
-    "type" : "text",
-    "label" : "Your Weekly Budget",
-    "value" : 75.00,
-    "placeholder" : "100.00",
-    "description" : null,
-    "required" :  true
-  };
+  "type" : "text", //text, password, boolean, select
+  "label" : "Your Weekly Budget",
+  "value" : 75.00,
+  "placeholder" : "100.00",
+  "description" : null,
+  "required" :  true
+};
 
-if(serverConfig.notifications) {
-  cloudConfig.fields.email = {
-    "type" : "text",
-    "label" : "Optional Email to Notify",
-    "value" : "",
-    "placeholder" : "your@email.com",
-    "description" : null
-  };
-}
+// 
+// EXAMPLE OF SELECT - this feature is not yet implemented
+// 
+// cloudConfig.fields.timeframe = {
+//   "type" : "select",
+//   "value" : "weekly",
+//   "options" : [
+//     { label: "Daily", value: "daily"},
+//     { label: "Weekly", value: "weekly"},
+//     { label: "Monthly", value: "monthly"}
+//   ],
+//   label : "Budget Timeframe"
+// };
+
 
 //
 // Optional Learn More URL
@@ -143,7 +150,7 @@ cloudConfig.get = function(host) {
   var appConfig = {
     "id" : CLOUDAPP_ID+((!limit_one_per_user) ? Math.random() : ''), 
     "name" : cloudConfig.name,
-    "img" : cloudConfig.img || null,
+    "img" : cloudConfig.img || host+"/album.jpg",
     "summary" : cloudConfig.summary,
     "uses" : cloudConfig.requires, // available: 'nickname','geo'
     "color" : cloudConfig.color, // Pick a color that works on both black and white backgrounds
@@ -162,6 +169,7 @@ cloudConfig.get = function(host) {
   };
   return appConfig;
 }
+
 
 module.exports = cloudConfig;
 

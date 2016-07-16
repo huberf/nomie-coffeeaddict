@@ -8,20 +8,26 @@
 
 
 /**
- * Setup Redis Storage.
- */
-var redis = require('node-redis');
-var config = require(__dirname+'/../config/all');
+ * Setup Redis redisStore.
 
-if(config.server.accounts === true) {
+ */
+var config = require(__dirname+'/../config/all');
+var redis = require('node-redis');
+var redisStore;
+var LocalStorage = require('node-localstorage').LocalStorage;
+var localStorage;
+var storagePrefix = ''; 
+
+if(config.server.storage === "redis") {
   var redisConfig = config.server.dev.redis;
   if(process.env['NODE_ENV']=='production') {
     redisConfig = config.server.production.redis;
   }
-  var storage = redis.createClient(redisConfig.port, redisConfig.host); // create storage
-} // end if we should store
-
-
+  redisStore = redis.createClient(redisConfig.port, redisConfig.host); // create storage
+  storagePrefix = redisConfig.prefix;
+} else {
+  localStorage = new LocalStorage(__dirname+'/../../data');
+}
 /**
  * User
  *
@@ -44,7 +50,7 @@ var User = function(anonid, onLoaded) {
   var data = {}; // User Data Stuffs
 
 
-  pub.anonid = redisConfig.prefix+pvt.anonid;
+  pub.anonid = storagePrefix+pvt.anonid;
   
   /**
    * Internal Init will get the user from redis if it exists.
@@ -52,17 +58,31 @@ var User = function(anonid, onLoaded) {
    */
   pvt.init = function() {
     
-    storage.get(pub.anonid, function(err, record) {
-      if(!err && record != null) {
-        data = JSON.parse(record);
+    if(config.server.storage==="redis") {
+      redisStore.get(pub.anonid, function(err, record) {
+        if(!err && record != null) {
+          data = JSON.parse(record);
+          onLoaded(null, pub);
+        } else {
+          // We didn't find a user
+          console.log("Nothing found with key", pub.anonid);
+          onLoaded(err, pub);
+        }
+      });
+    } else {
+      var userData = localStorage.getItem(pub.anonid);
+      if(userData) {
+        data = JSON.parse(userData);
         onLoaded(null, pub);
       } else {
-        // We didn't find a user
         console.log("Nothing found with key", pub.anonid);
-        onLoaded(err, pub);
+        onLoaded({ message: 'No user data found'}, pub);
       }
-    });
+    }
+    
   }
+
+
   // Set a user data field
   pub.set = function(key, value) {
     console.log("Setting "+key+" to "+value);
@@ -79,10 +99,15 @@ var User = function(anonid, onLoaded) {
     data._updated = new Date();
     data._created = data._created || new Date();
     // Save to Redis
-    storage.set(pub.anonid, JSON.stringify(data), function(err, res) {
-      console.log("USER :: Save", err, res);
-      callback(err, res);
-    });
+    if(config.server.storage==="redis") {
+      redisStore.set(pub.anonid, JSON.stringify(data), function(err, res) {
+        console.log("USER :: Save", err, res);
+        callback(err, res);
+      });
+    } else {
+      localStorage.setItem(pub.anonid, JSON.stringify(data));
+      callback(null, data);
+    }
     return pub;
   }
   // auto initialize
