@@ -13,10 +13,11 @@
 <img src="<%=config.server.getActive().url %>/banner-over.svg" width="100%" />
 <div class="hairline-all padding-xs-bottom"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwBwAFAgH9XSO6wwAAAABJRU5ErkJggg==" width="100%" height="20" /></div>
 <% } else if(goal) { %>
-<img src="<%=config.server.getActive().url %>/banner-under.svg" width="100%" />
 <% if(percentTowardGoal>0 && percentTowardGoal < 61) { %>
+<img src="<%=config.server.getActive().url %>/banner-under.svg" width="100%" />
 <div class="hairline-all padding-xs-bottom"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPkWGr0BwADeQHdTs1z2gAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="20" /></div>
 <% } else if(percentTowardGoal>60 && percentTowardGoal < 99) { %>
+<img src="<%=config.server.getActive().url %>/banner-warning.svg" width="100%" />
 <div class="hairline-all padding-xs-bottom"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN83Cj+HwAGRgJ8FVBijgAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="20" /></div>
 <% } %>
 <% } %>
