@@ -123,7 +123,9 @@ router.post('/capture', function(req, res, next) {
               shareMessage = "I'm UNDER my weekly '"+spenderSlot.tracker.label+"' budget by $"+(results.goal - results.thisWeekSpend).toFixed(2)+"!! @NomieApp #bigspender"
             }
 
-            results.shareMessage = encodeURI(shareMessage);
+            shareMessage = "Hi";
+
+            results.shareMessage = (shareMessage);
 
 
             var rendered = ejs.render(file, results);
