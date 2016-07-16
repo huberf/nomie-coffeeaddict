@@ -116,18 +116,19 @@ router.post('/capture', function(req, res, next) {
             var file = fs.readFileSync(__dirname + '/views/results.ejs', 'utf8');
             results.config = config;
 
+            // 
+            // Create a Sharing Message
+            // to help promote the Cloud App and Nomie!
             var shareMessage = "I'm tracking my '"+spenderSlot.tracker.label+"' spending with @NomieApp. #bigspender";
             if(results.goal && results.overlimit) {
               shareMessage = "Ugh, I'm over my weekly '"+spenderSlot.tracker.label+"' budget by $"+(results.goal - results.thisWeekSpend).toFixed(2)+". @NomieApp #bigspender"
             } else if(results.goal) {
               shareMessage = "I'm UNDER my weekly '"+spenderSlot.tracker.label+"' budget by $"+(results.goal - results.thisWeekSpend).toFixed(2)+"!! @NomieApp #bigspender"
             }
+            // Encode sharing message for save travels.
+            results.shareMessage = encodeURI(shareMessage);
 
-            shareMessage = "Hi";
-
-            results.shareMessage = (shareMessage);
-
-
+            // Render out results to a string
             var rendered = ejs.render(file, results);
 
             // Is the user of their limit?
@@ -151,8 +152,6 @@ router.post('/capture', function(req, res, next) {
 
                 }
               }
-
-
 
               // If we're going to force show this, lets save
               // that we did, this way we only show it one time 
