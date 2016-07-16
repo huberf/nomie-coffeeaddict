@@ -19,48 +19,9 @@ put all of this together in a big nasty object and return it for results.ejs to 
 
  */
 
-
-
 var processNomieData = function(postData, onComplete) {
-  
-  console.log("### PROCESS DATA ###");
-
   var results = generateResults(postData);
   onComplete(null, results);
-
-  // if (config.server.notifications!== true) {
-  //   // No Notications Enabled 
-  // // Nothing to do but pass it one.
-  //   results = generateResults(postData);
-  //   onComplete(null, results);
-  // } else {
-
-  //   var user = new User(postData.anonid, function(err, user) {
-  //     results = generateResults(postData);
-  //     if (postData.experiment.info.email) {
-  //       var email = postData.experiment.info.email.value || null;
-  //       if (email) {
-  //         console.log("## CAPTURE :: USER PROVIDED EMAIL " + email);
-  //         user.set('email', email);
-  //         user.save(function() {
-
-  //           // If we're over the limit 
-  //           // lets trigger the send Notification Process
-  //           // it will determine if it already sent it or not.
-  //           if (results.overlimit) {
-  //             var slot = postData.experiment.slots[Object.keys(postData.experiment.slots)[0]];
-  //             sendNotification(user, slot, function(err, response) {
-  //               // Notification Sent
-  //             });
-  //           }
-  //           // We don't need to wait for the email to send.. 
-  //           onComplete(null, results);
-
-  //         });
-  //       } // end if they provided an email
-  //     } // end if this request has an email node.
-  //   });
-  //} // end if notifications or not. 
 };
 
 /**
@@ -267,52 +228,6 @@ var generateResults = function(postData) {
 
   return results;
 };
-
-/**
- * Send Notification
- * This will only be triggered if account:true is configured in the server.config.js file.
- *
- * @param  {object}   user     User Object
- * @param  {object}   slot     Specific Slot - used for keeping track of the last message sent for this specific tracker
- * @param  {Function} callback err,results design pattern
- */
-var sendNotification = function(user, slot, callback) {
-
-  var lastMessageKey = 'lastMessage-' + slot.tracker._id;
-  var emailTemplate = fs.readFileSync(__dirname + '/../views/email.ejs', 'utf8');
-  var emailRendered = ejs.render(emailTemplate, results);
-
-  var time = user.get(lastMessageKey);
-  var sendMail = true;
-
-  if (!time) {
-    console.log("## CAPTURE :: NO EMAIL SENT THIS WEEK - SEND");
-    sendMail = true;
-  } else {
-    if (moment(time).utcOffset(offset).startOf('week').format('ddd MMM Do YYYY') == results.weekStart) {
-      console.log("## CAPTURE :: DON'T SEND EMAIL - ALREADY SENT", err, time);
-      sendMail = false;
-    }
-  }
-  if (sendMail) {
-    console.log("## CAPTURE :: SENDING THE EMAIL...");
-
-    var mailer = new Mailer();
-    user.set(lastMessageKey, new Date()).save();
-
-    mailer.to(postData.experiment.info.email.value)
-      .subject(slot.tracker.label + " over Limit!")
-      .body(emailRendered)
-      .send(function(err, response) {
-        console.log("## CAPTURE :: EMAIL SENT");
-        console.log(err, response);
-        callback(err, response);
-      });
-  }
-
-
-}; // end Send Notification
-
 
 
 module.exports = processNomieData;

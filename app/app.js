@@ -48,6 +48,9 @@ router.get('/test', function(req, res, next) {
 
   DataProcessor(postData.generate(), function(err, results) {
     var file = fs.readFileSync(__dirname + '/views/results.ejs', 'utf8');
+    
+     // provide the config to the view too, if we need any of the variables.
+
     var rendered = ejs.render(file, results);
     (!err) ? res.send('<link href="http://nui.nomie.io/css/nui.css" rel="stylesheet" />' + rendered) : res.json(err);
   })
@@ -111,6 +114,7 @@ router.post('/capture', function(req, res, next) {
 
             // Get the Results file and merge it with the results
             var file = fs.readFileSync(__dirname + '/views/results.ejs', 'utf8');
+            results.config = config;
             var rendered = ejs.render(file, results);
 
             // Is the user of their limit?

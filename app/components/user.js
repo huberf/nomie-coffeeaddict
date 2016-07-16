@@ -12,13 +12,16 @@
 
  */
 var config = require(__dirname+'/../config/all');
-var redis = require('node-redis');
-var redisStore;
-var LocalStorage = require('node-localstorage').LocalStorage;
-var localStorage;
+var redis, redisStore,LocalStorage,localStorage;
 var storagePrefix = ''; 
 
+//
+// Determine which storage method
+// 
+
 if(config.server.storage === "redis") {
+  // It's redis!
+  var redis = require('node-redis');
   var redisConfig = config.server.dev.redis;
   if(process.env['NODE_ENV']=='production') {
     redisConfig = config.server.production.redis;
@@ -26,6 +29,8 @@ if(config.server.storage === "redis") {
   redisStore = redis.createClient(redisConfig.port, redisConfig.host); // create storage
   storagePrefix = redisConfig.prefix;
 } else {
+  // It's local storage
+  LocalStorage = require('node-localstorage').LocalStorage;
   localStorage = new LocalStorage(__dirname+'/../../data');
 }
 /**
@@ -82,18 +87,30 @@ var User = function(anonid, onLoaded) {
     
   }
 
-
-  // Set a user data field
+  /**
+   * Set a user variable
+   * @param {string} key   Key/ID of the field
+   * @param {Object} value Any type of value
+   */
   pub.set = function(key, value) {
     console.log("Setting "+key+" to "+value);
     data[key] = value;
     return pub;
   }
-  // Get a user data field
+  /**
+   * Get a User Variable
+   * @param  {string} key Key/ID of the field
+   * @return {Object}     Any type of value
+   */
   pub.get = function(key) {
     return data[key] || null;
   }
-  // Save to Storage
+  
+  /**
+   * Save a User
+   * @param  {Function} callback err,data pattern
+   * @return {Object}            Pub
+   */
   pub.save = function(callback) {
     callback = callback || function() {};
     data._updated = new Date();
