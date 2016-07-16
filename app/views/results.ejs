@@ -115,20 +115,14 @@
     <div class="nui-item-divider"></div>
     
 
-    <% if(overlimit && goal) { %>
-    <div class="nui-item text-red text-center" href="nomie://api/share/I went over my weekly '<%= experiment.slots.spend.tracker.label %>' budget by <%= (goal - thisWeekSpend).toFixed(2) %> @nomieApp">
+
+    <div class="nui-item text-red text-center" href="nomie://api/share/<%= shareMessage %>">
       <div class="nui-item-content text-center text-red">
         Share...
       </div>
       
     </div>
-    <% } else if(goal) { %>
-    <div class="nui-item text-center" href="nomie://api/share/I am still <%= (goal - thisWeekSpend).toFixed(2) %> under my weekly '<%= experiment.slots.spend.tracker.label %>' budget! @nomieApp">
-      <div class="nui-item-content text-center">
-        Share this Success...
-      </div>
-    </div>
-    <% } %>
+
 
 
     <div class="nui-item-divider"></div>
