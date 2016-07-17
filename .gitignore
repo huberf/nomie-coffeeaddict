@@ -1,0 +1,6 @@
+node_modules/*
+app/config/server.local.js
+.DS_STORE
+*/.DS_STORE
+data/*
+

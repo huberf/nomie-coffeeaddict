@@ -1,0 +1,123 @@
+<!--
+  Nomie Experiment HTML Formating Notes
+
+  This HTML will be parsed by a markdown editor. Meaning you can use either HTML or Markdown which is Good.
+  It also means that any inline styles, calles to javascript or external CSS files will be promptly removed.
+
+  This means you're limited to the CSS classes that are available in Nomie.
+  While this document doesnt cover much, it will give you a starting point - until I have
+  better documentation setup for all the available class names.
+
+-->
+<div class="">
+  <div class="nui-list">
+    <div class="text-center">
+      <% if(overlimit && goal) { %>
+      <img src="<%=config.server.getActive().url %>/banner-over.svg" width="100%" />
+      <div class="nui-item-divider hairline-off"></div>
+      <div class="flex flex-fill hairline-all padding-xs"><img class="hairline-all border-radius" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwBwAFAgH9XSO6wwAAAABJRU5ErkJggg==" width="98%" height="20" /></div>
+      <div class="nui-item-divider hairline-off"></div>
+    <% } else if(goal) { %>
+      <% if(percentTowardGoal>0 && percentTowardGoal < 61) { %>
+      <img src="<%=config.server.getActive().url %>/banner-under.svg" width="100%" />
+      <div class="nui-item-divider  hairline-off"></div>
+      <div class="flex flex-fill hairline-all padding-xs"><img class="hairline-all border-radius" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPkWGr0BwADeQHdTs1z2gAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="20" /></div>
+      <% } else if(percentTowardGoal>60 && percentTowardGoal < 99) { %>
+      <img src="<%=config.server.getActive().url %>/banner-warning.svg" width="100%" />
+      <div class="nui-item-divider  hairline-off"></div>
+      <div class="flex flex-fill hairline-all padding-xs"><img class="hairline-all border-radius" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN83Cj+HwAGRgJ8FVBijgAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="20" /></div>
+      <% } %>
+      <div class="nui-item-divider hairline-off"></div>
+    <% } %>
+    </div>
+    <div class="nui-item">
+      <div class="nui-item-addon nomie-button nomie-button-md">
+          <div class="icon-container">
+            <i class="<%=experiment.slots.spend.tracker.icon %>"></i>
+          </div>
+      </div>
+      <div class="nui-item-content flex-grow">
+        <label for="" class="text-bold truncate"><%= experiment.slots.spend.tracker.label %></label>
+        <p>Weekly Budget</p>
+      </div>
+      <div class="nui-item-addon truncate ">
+        <span class="text-lg">$<%= parseFloat(goal).toFixed(2) %></span>
+      </div>
+    </div>
+      <div class="nui-item-divider"></div>
+    <% if(overlimit) { %>
+      <div class="nui-item  nui-item-lg">
+          <div class="nui-item-content">
+            <label for="" class="text-assertive text-left">Over Budget By</label>
+          </div>
+          <div class="nui-item-addon">
+            <span class="text-red text-right text-lg">$<%= (thisWeekSpend - goal).toFixed(2) %></span>
+          </div>
+      </div>
+    <% } else { %>
+      <div class="nui-item">
+          <div class="nui-item-content">
+            <label for="" class="text-green text-left">Budget Remaining</label>
+          </div>
+          <div class="nui-item-addon">
+            <span class="text-green text-lg">$<%= (goal - thisWeekSpend).toFixed(2) %></span>
+          </div>
+      </div>
+    <% } %>
+
+   <div class="nui-item-divider"></div>
+
+    <div class="nui-item nui-item-lg">
+      <div class="nui-item-content">
+        <label for="">Spent Today</label>
+      </div>
+      <div class="nui-item-addon">
+          <span class="text-lg"> $<%= parseFloat(thisWeekTally[thisDay]).toFixed(2) %></span>
+      </div>
+    </div>
+
+    <div class="nui-item-divider"></div>
+  
+
+    <div class="nui-item  padding-sm-bottom">
+      <div class="nui-item-content text-faded width-33 flex-shrink-off flex-grow-off">
+        Totals
+      </div>
+      <div class="nui-item-content text-right width-33 text-bold flex-shrink-off flex-grow-off " >
+        <div class="text-bold text-sm <% if(lastWeekOverlimit) { %>text-red<% } else { %> text-green <% } %> ">Last Week</div>
+         $<%= lastWeekSpend.toFixed(2) %>
+      </div>
+      <div class="nui-item-content text-right width-33 text-bold flex-shrink-off flex-grow-off ">
+        <div class="text-bold text-sm <% if(overlimit) { %>text-red<% } else { %> text-green <% } %> ">This Week</div>  
+        $<%= thisWeekSpend.toFixed(2) %> 
+      </div>
+    </div>
+
+    <div class="nui-item-divider"></div>
+    
+    <% var days = ['sun','mon','tue','wed','thu','fri','sat']; for(var i in days) { %>
+    <div class="nui-item <% if(thisDay==days[i]) { %> activated text-bold <% } %>">
+      <div class="nui-item-content width-33 flex-shrink-off flex-grow-off" >
+        <% if(thisDay==days[i]) { %><i class="ion-star text-primary"></i><% } %>
+        <%= days[i].toUpperCase() %>
+      </div>
+      <div class="nui-item-content text-right width-33 flex-shrink-off flex-grow-off text-normal text-faded-90">
+        <span class="">$</span><%=parseFloat(lastWeekTally[days[i].toLowerCase()]).toFixed(2) %>
+      </div>
+      <div class="nui-item-content text-right width-33 flex-shrink-off flex-grow-off <% if(thisDay==days[i]) { %>  <% } %>">
+          <span class="">$</span><%=parseFloat(thisWeekTally[days[i].toLowerCase()]).toFixed(2) %>   
+      </div>
+    </div>
+    <% } %>
+    <div class="nui-item-divider"></div>
+
+    <div class="nui-item">
+      <div class="nui-item-content">
+            <div class="text-solid text-sm text-center" ><%= weekStart %> to <%= weekEnd %></div>
+      </div>
+    </div>
+    
+    <div class="nui-item-divider"></div>
+  
+  </div>
+</div>
