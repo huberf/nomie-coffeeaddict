@@ -35,6 +35,7 @@ router.get('/', function(req, res, next) {
   });
 });
 
+<<<<<<< HEAD
 router.get('/about', function(req, res, next) {
   res.render('about', {
     cloudApp: config.app.get(config.server.getActive().url)
@@ -49,6 +50,15 @@ router.get('/about', function(req, res, next) {
 // view is an approximation - using an external Nomie UI library. 
 // Nomie DOES NOT contain all of the same classes as NUI. The best way to test it
 // is to add your Cloud app via the URL method to Nomie and test it within the app.
+=======
+//
+// TEST Route
+// 
+// This will generate some fake data and display a close representation
+// to what your results would look like in Nomie. Please note that this
+// view is an approximation - using an external Nomie UI library. 
+// Nomie DOES NOT contain all of the same classes as NUI. 
+>>>>>>> 7aee2be4e3eacdefa6884c2b15ce9951da376846
 
 router.get('/test', function(req, res, next) {
   var postData = new TestData();

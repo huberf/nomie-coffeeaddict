@@ -36,8 +36,12 @@ Before you can run Big Spender, you'll need to ensure you have Redis running.
 ## Gotchas and other considerations
 
 1. Once a User has installed your cloud app, its configuration is forever set until the user deletes ithe app.
+<<<<<<< HEAD
 Meaning that you cannot update your base configuration (collection method, frequency, tracker slot details). 
 
 2. Responses returned as a Modal within Nomie (using the html response opposed to the URL response) has limited HTML support.
 Specifically, all HTML is ran through a Markdown processor, so all inline styles, javascript and other funky stuff is removed. 
 
+=======
+Meaning that you cannot update your base configuration (collection method, frequency, tracker slot details). 
+>>>>>>> 7aee2be4e3eacdefa6884c2b15ce9951da376846

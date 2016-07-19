@@ -156,7 +156,11 @@ cloudConfig.get = function(host) {
     "color" : cloudConfig.color, // Pick a color that works on both black and white backgrounds
     "hostedBy" : cloudConfig.hostedBy,
     "join" : host+"/join",
+<<<<<<< HEAD
     "more" : cloudConfig.moreUrl || host,
+=======
+    "more" : cloudConfig.moreUrl || host+"/about",
+>>>>>>> 7aee2be4e3eacdefa6884c2b15ce9951da376846
     "collection" : {
         "method" : cloudConfig.collection_method,
         "frequency" : cloudConfig.collection_frequency, // every 30 minutes
