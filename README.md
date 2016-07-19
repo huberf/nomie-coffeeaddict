@@ -1,5 +1,7 @@
 # Nomie Cloud App Example - Big Spender
 
+## NOTE: This is a work in progress
+
 <img src="http://snap.icorbin.com/Screen-Shot-2016-07-14-22-49-35.png">
 
 This repo is for Big Spender, a Nomie Cloud App that is currently available in the Nomie Market. 
