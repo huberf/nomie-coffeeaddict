@@ -14,15 +14,15 @@ var config = require(__dirname + '/config/all');
 var TestData = require(__dirname + '/utils/test-data');
 
 //
-// Load Data Processor 
+// Load Data Processor
 // This is the main function that handles the massaging of the data
 var DataProcessor = require(__dirname + '/components/data-processor');
 
 
 //
 // JOIN Route
-// 
-// The route localhost/join is the URL you'd provide to Nomie to test 
+//
+// The route localhost/join is the URL you'd provide to Nomie to test
 // in the App for example: http://192.168.1.150:5000/join
 
 router.get('/join', function(req, res, next) {
@@ -43,10 +43,10 @@ router.get('/about', function(req, res, next) {
 
 //
 // TEST Route
-// 
+//
 // This will generate some fake data and display a "close" representation
 // to what your results would look like in Nomie. Please note that this
-// view is an approximation - using an external Nomie UI library. 
+// view is an approximation - using an external Nomie UI library.
 // Nomie DOES NOT contain all of the same classes as NUI. The best way to test it
 // is to add your Cloud app via the URL method to Nomie and test it within the app.
 
@@ -56,7 +56,7 @@ router.get('/test', function(req, res, next) {
 
   DataProcessor(postData.generate(), function(err, results) {
     var file = fs.readFileSync(__dirname + '/views/results.ejs', 'utf8');
-    
+
      // provide the config to the view too, if we need any of the variables.
 
     var rendered = ejs.render(file, results);
@@ -66,13 +66,14 @@ router.get('/test', function(req, res, next) {
 
 //
 // CAPTURE Route
-// 
+//
 // This is the Main Capture route. It is fired when a user runs the Cloud App
-// or the schedule is triggered 
-// 
+// or the schedule is triggered
+//
 
 
 router.post('/capture', function(req, res, next) {
+  console.log(req.body);
   var user;
   try {
     console.log("## CAPTURE :: START");
@@ -89,9 +90,9 @@ router.post('/capture', function(req, res, next) {
 
       //
       // Missing Slots
-      // Possible this is not a valid request. 
+      // Possible this is not a valid request.
       // Let's die
-      // 
+      //
       res.json({
         success: false,
         error: {
@@ -107,15 +108,15 @@ router.post('/capture', function(req, res, next) {
 
         var isNewUser = (err) ? true : false; // is this a new user or not. If an error exists then we didnt find it in the storage unit.
 
-        // 
+        //
         // Everything is in order - let's process the results.
         // If the user is over the limit, we will FORCE show the modal
         // one time, and ONLY one time. Don't be a dick and force show the results
         // a bunch.
-        // 
+        //
         // If we haven't notified them of being over the limit this week
-        // 
-        // 
+        //
+        //
         DataProcessor(req.body, function(dataError, results) {
           var forceShow = false;
           if (!dataError) {
@@ -124,7 +125,7 @@ router.post('/capture', function(req, res, next) {
             var file = fs.readFileSync(__dirname + '/views/results.ejs', 'utf8');
             results.config = config;
 
-            // 
+            //
             // Create a Sharing Message
             // to help promote the Cloud App and Nomie!
             var shareMessage = "I'm tracking my '"+spenderSlot.tracker.label+"' spending with @NomieApp. #bigspender";
@@ -143,13 +144,13 @@ router.post('/capture', function(req, res, next) {
             if (results.overlimit == true) {
               if (isNewUser) {
                 // New User - lets see if they are already over the limit
-                // if so, lets force show the modal to alert them. 
+                // if so, lets force show the modal to alert them.
                 forceShow = true;
               } else {
                 // Existing User
                 var lastMessage = thisUser.get(spenderSlot.tracker._id + '-message-on');
                 if (!lastMessage) {
-                  // No message for this slot and week. 
+                  // No message for this slot and week.
                   forceShow = true;
                 } else {
                   var weekStart = moment().utcOffset(req.body.timezonOffset).startOf('week').format('MMM Do YYYY');
@@ -162,12 +163,12 @@ router.post('/capture', function(req, res, next) {
               }
 
               // If we're going to force show this, lets save
-              // that we did, this way we only show it one time 
+              // that we did, this way we only show it one time
               // for each week.
               if (forceShow) {
                 thisUser.set(spenderSlot.tracker._id + '-message-on', moment().utcOffset(req.body.timezonOffset).toDate());
                 thisUser.save(function(err, results) {});
-              } // end updating user last message time for this lot. 
+              } // end updating user last message time for this lot.
             } // end if over limit
 
             // Send JSON back to Nomie.
