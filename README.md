@@ -15,7 +15,7 @@ This Cloud App Requires:
 ### Installing
 
 ```
-git clone https://github.com/happydata/bigspender.git
+git clone https://github.com/happydata/cloudapp-bigspender.git
 cd bigspender
 npm install
 ```
