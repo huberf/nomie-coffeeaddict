@@ -11,9 +11,9 @@ Process Nomie Data!
 This function is what will capture the data from Nomie,
 analyize it some how or another, and turn a JSON response
 to the route - the route will then mash it with the results.ejs
-and send it back to Nomie. 
+and send it back to Nomie.
 
-In the case of this Big Spender App, I am compiling a map of this week and last week, 
+In the case of this Big Spender App, I am compiling a map of this week and last week,
 looping over the results and adding up the value for each week and each day. I then
 put all of this together in a big nasty object and return it for results.ejs to consume.
 
@@ -38,7 +38,7 @@ var generateResults = function(postData) {
     email = postData.experiment.info.email.value || null;
   }
   // Single Slot Instance
-  // Since this cloud app only uses a single slot, I can call it from here. 
+  // Since this cloud app only uses a single slot, I can call it from here.
   var slotName = Object.keys(postData.experiment.slots)[0];
   var slot = postData.experiment.slots[slotName]; // Get the Tracker Slot
 
@@ -125,10 +125,11 @@ var generateResults = function(postData) {
 
   //////////////////////////////////////////
   ///
-  // Loop over each Record! 
-  // Do you Magic Work here. 
+  // Loop over each Record!
+  // Do you Magic Work here.
 
   for (var i in rows) {
+    console.log(value);
     var value = rows[i].value || 0;
     var rTime = moment(new Date(rows[i].time)).utcOffset(offset);
     var day = rTime.format(daySlotFormat);
@@ -161,7 +162,7 @@ var generateResults = function(postData) {
   // end looping over rows
 
 
-  // Loop over this week 
+  // Loop over this week
   for (var i in thisWeekDaily) {
     thisWeekTally[thisWeekDaily[i].day] = thisWeekDaily[i].value;
   }
