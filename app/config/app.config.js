@@ -2,13 +2,13 @@ var cloudConfig = {};
 var serverConfig = require(__dirname+'/server.config.js');
 
 //
-// Pick your Cloud App ID 
-// 
-// This needs to be completely unique to your application. 
-// Please make sure that it's unique, otherwise it might not 
+// Pick your Cloud App ID
+//
+// This needs to be completely unique to your application.
+// Please make sure that it's unique, otherwise it might not
 // able to be installed.
 
-var CLOUDAPP_ID = "io.nomie.experiments.bigspender";
+var CLOUDAPP_ID = "io.noahcodes.experiments.coffeeaddict";
 
 //
 // Limit One Per User?
@@ -20,17 +20,17 @@ var limit_one_per_user = false;
 
 //
 // Name your Cloud App
-// 
+//
 // Give your cloud app a proper name! Keep it shorter than 20 characters.
 
-cloudConfig.name = "Big Spender";
+cloudConfig.name = "Coffee Addict";
 
 //
 // Who's the Owner of this Cloud App?
-// 
-// It can be a company or a persons name. 
+//
+// It can be a company or a persons name.
 
-cloudConfig.hostedBy = "Brandon Corbin";
+cloudConfig.hostedBy = "Noah Huber-Feely";
 
 //
 // Cloud App Image
@@ -42,66 +42,66 @@ cloudConfig.hostedBy = "Brandon Corbin";
 
 
 //
-// Your Cloud App Summary 
-// 
-// Create a shortish description that highlights the purpose of this 
-// cloud app.  
+// Your Cloud App Summary
+//
+// Create a shortish description that highlights the purpose of this
+// cloud app.
 
-cloudConfig.summary = "Monitor your spending! BigSpender helps keep track of how much money you spend on... whatever. Set a weekly budget and be notified when you're getting close.";
+cloudConfig.summary = "This is a cloud app to track your coffee usage and alert you when you go beyond your regular levels.";
 
-// 
+//
 // Set a color for your Cloud App
-// 
+//
 // This color will be used in Nomie to help your App standout
-// Make sure the color isn't too light. 
+// Make sure the color isn't too light.
 
 cloudConfig.color = "#CD704C";
 
-// 
+//
 // Determine what data this cloud app requires
-// 
+//
 // Options are: nickname, geo
 // nickname: returns the the users nickname
-// geo: will include geo location data for tracker events. Otherwise no geo. 
+// geo: will include geo location data for tracker events. Otherwise no geo.
 
 cloudConfig.requires = ['nickname','geo'];
 
 //
 // Collection Methods
-// 
+//
 // Collections can happen automatically (one a schedule) or manually (the user manually runs)
 // Automatic collections can also specify how frequently they want to collect
-// 
+//
 cloudConfig.collection_method = "automatic";
 
-// 
-// Collection Frequency 
-// 
+//
+// Collection Frequency
+//
 // Options are 1mm (minutes), 1h (hour), 1d (day), 1m (month)
 // For example: 60mm will check every 60 minutes or the next time the user launches Nomie.
 
 cloudConfig.collection_frequency = "30mm"; // capture every 6 hours - if automated
 
 //
-// Collection Amount 
-// 
+// Collection Amount
+//
 // How much data should you collect
-// Options: latest, 
+// Options: latest,
 
-cloudConfig.collection_amount = "1m"; // Select a month of data 
+cloudConfig.collection_amount = "2m"; // Select a month of data
 
 
-// 
+//
 // Setup what Trackers this cloud app needs.
-// 
-// Each slot equals one tracker. In this case I'm only needing 1 tracker 
-// that I label "Food out Cost". 
+//
+// Each slot equals one tracker. In this case I'm only needing 1 tracker
+// that I label "Food out Cost".
 
 cloudConfig.slots = {
     "spend" : {
-      "label" : "Food Out Cost",
-      "summary" : "Tracker used to track spending",
-      "tracker" : null, // leave empty 
+      "label" : "Coffee",
+      "summary" : "Tracker used to count cups of coffee",
+      "tracker" : null, // leave empty
       "required" : true // is this required to run the cloud app?
     }
 };
@@ -109,16 +109,16 @@ cloudConfig.slots = {
 cloudConfig.fields = {}
 cloudConfig.fields.goal = {
   "type" : "text", //text, password, boolean, select
-  "label" : "Your Weekly Budget",
-  "value" : 75.00,
-  "placeholder" : "100.00",
+  "label" : "Your Daily Dose",
+  "value" : 3.00,
+  "placeholder" : "2.00",
   "description" : null,
   "required" :  true
 };
 
-// 
+//
 // EXAMPLE OF SELECT - this feature is not yet implemented
-// 
+//
 // cloudConfig.fields.timeframe = {
 //   "type" : "select",
 //   "value" : "weekly",
@@ -134,7 +134,7 @@ cloudConfig.fields.goal = {
 //
 // Optional Learn More URL
 //
-// Include a moreUrl and Nomie will set this as the default learn more website. 
+// Include a moreUrl and Nomie will set this as the default learn more website.
 // otherwise, this Cloud App template will automatically include the /about.ejs page
 
 // cloudConfig.moreUrl = "https://ourwebsite.com/something/something"
@@ -148,7 +148,7 @@ cloudConfig.get = function(host) {
   host = host || 'http://localhost:5000';
   // Base Configuration
   var appConfig = {
-    "id" : CLOUDAPP_ID+((!limit_one_per_user) ? Math.random() : ''), 
+    "id" : CLOUDAPP_ID+((!limit_one_per_user) ? Math.random() : ''),
     "name" : cloudConfig.name,
     "img" : cloudConfig.img || host+"/album.jpg",
     "summary" : cloudConfig.summary,
