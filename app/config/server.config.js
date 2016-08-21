@@ -6,7 +6,7 @@
 var ServerConfig = {
   "notifications" : false, // if sent to true, you must have smtp and redis configured properly.
   "dev" : {
-    "url" : "http://52.11.188.99:5000",
+    "url" : "http://www.coffeeaddict.tech:5000",
     "storage" : "localhost",
     "redis" : {
       "host" : "192.168.99.100",
