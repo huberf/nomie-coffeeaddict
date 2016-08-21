@@ -109,8 +109,8 @@ cloudConfig.slots = {
 cloudConfig.fields = {}
 cloudConfig.fields.goal = {
   "type" : "text", //text, password, boolean, select
-  "label" : "Your Daily Dose",
-  "value" : 3.00,
+  "label" : "Your Weekly Dose",
+  "value" : 7.00,
   "placeholder" : "2.00",
   "description" : null,
   "required" :  true
