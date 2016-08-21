@@ -145,16 +145,16 @@ var generateResults = function(postData) {
     }
 
     if (week === thisWeek) {
-      thisWeekSpend = thisWeekSpend + value;
+      thisWeekSpend = thisWeekSpend + 1;
     }
     if (week === lastWeek) {
-      lastWeekSpend = lastWeekSpend + value;
+      lastWeekSpend = lastWeekSpend + 1;
     }
     if (day === today) {
-      todaySpend = todaySpend + value;
+      todaySpend = todaySpend + 1;
     }
     if (day === yesterday) {
-      yesterdaySpend = yesterdaySpend + value;
+      yesterdaySpend = yesterdaySpend + 1;
     }
   }
 

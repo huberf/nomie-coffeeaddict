@@ -41,26 +41,26 @@
         <p>Weekly Budget</p>
       </div>
       <div class="nui-item-addon truncate ">
-        <span class="text-lg">$<%= parseFloat(goal).toFixed(2) %></span>
+        <span class="text-lg"><%= goal %> cups</span>
       </div>
     </div>
       <div class="nui-item-divider"></div>
     <% if(overlimit) { %>
       <div class="nui-item  nui-item-lg">
           <div class="nui-item-content">
-            <label for="" class="text-assertive text-left">Over Budget By</label>
+            <label for="" class="text-assertive text-left">Over Levels By</label>
           </div>
           <div class="nui-item-addon">
-            <span class="text-red text-right text-lg">$<%= (thisWeekSpend - goal).toFixed(2) %></span>
+            <span class="text-red text-right text-lg"><%= thisWeekSpend - goal %> cups</span>
           </div>
       </div>
     <% } else { %>
       <div class="nui-item">
           <div class="nui-item-content">
-            <label for="" class="text-green text-left">Budget Remaining</label>
+            <label for="" class="text-green text-left">Cups Remaining</label>
           </div>
           <div class="nui-item-addon">
-            <span class="text-green text-lg">$<%= (goal - thisWeekSpend).toFixed(2) %></span>
+            <span class="text-green text-lg"><%= goal - thisWeekSpend %> cups</span>
           </div>
       </div>
     <% } %>
@@ -72,7 +72,7 @@
         <label for="">Spent Today</label>
       </div>
       <div class="nui-item-addon">
-          <span class="text-lg"> $<%= parseFloat(thisWeekTally[thisDay]).toFixed(2) %></span>
+          <span class="text-lg"> <%= thisWeekTally[thisDay] %></span>
       </div>
     </div>
 
@@ -85,11 +85,11 @@
       </div>
       <div class="nui-item-content text-right width-33 text-bold flex-shrink-off flex-grow-off " >
         <div class="text-bold text-sm <% if(lastWeekOverlimit) { %>text-red<% } else { %> text-green <% } %> ">Last Week</div>
-         $<%= lastWeekSpend.toFixed(2) %>
+         <%= lastWeekSpend %>
       </div>
       <div class="nui-item-content text-right width-33 text-bold flex-shrink-off flex-grow-off ">
         <div class="text-bold text-sm <% if(overlimit) { %>text-red<% } else { %> text-green <% } %> ">This Week</div>  
-        $<%= thisWeekSpend.toFixed(2) %> 
+        <%= thisWeekSpend %> 
       </div>
     </div>
 
@@ -102,10 +102,10 @@
         <%= days[i].toUpperCase() %>
       </div>
       <div class="nui-item-content text-right width-33 flex-shrink-off flex-grow-off text-normal text-faded-90">
-        <span class="">$</span><%=parseFloat(lastWeekTally[days[i].toLowerCase()]).toFixed(2) %>
+        <span class=""></span><%=lastWeekTally[days[i].toLowerCase()] %>
       </div>
       <div class="nui-item-content text-right width-33 flex-shrink-off flex-grow-off <% if(thisDay==days[i]) { %>  <% } %>">
-          <span class="">$</span><%=parseFloat(thisWeekTally[days[i].toLowerCase()]).toFixed(2) %>   
+          <span class=""></span><%=thisWeekTally[days[i].toLowerCase()] %>   
       </div>
     </div>
     <% } %>
