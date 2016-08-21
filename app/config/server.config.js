@@ -1,10 +1,10 @@
-// 
+//
 // Setup this Cloud Apps Base Server Configuration
-// If you want to send emails, (accounts: true) You'll need to have REDIS installed somewhere for this Cloud App to work. 
-// Otherwise set accounts: false, and no emails will be sent.  
+// If you want to send emails, (accounts: true) You'll need to have REDIS installed somewhere for this Cloud App to work.
+// Otherwise set accounts: false, and no emails will be sent.
 
 var ServerConfig = {
-  "notifications" : false, // if sent to true, you must have smtp and redis configured properly. 
+  "notifications" : false, // if sent to true, you must have smtp and redis configured properly.
   "dev" : {
     "url" : "http://52.11.188.99:5000",
     "storage" : "localhost",
@@ -16,7 +16,7 @@ var ServerConfig = {
     }
   },
   "production" : {
-    "url" : "https://52.11.188.99:5000",
+    "url" : "http://www.coffeeaddict.tech:5000",
     "storage" : "redis",
     "redis" : {
       "host" : "dokku-redis-bigspender",
@@ -44,9 +44,9 @@ var ServerConfig = {
 
 // We will load a Local Server Config if it's present.
 // This allows us to store private keys without pushing them
-// to the code repository. 
-// No need to edit beyond this point. 
-// 
+// to the code repository.
+// No need to edit beyond this point.
+//
 
 ServerConfig.getActive = function() {
   if(process.env['NODE_ENV']=='production') {
