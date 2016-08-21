@@ -128,6 +128,7 @@ var generateResults = function(postData) {
   // Loop over each Record!
   // Do you Magic Work here.
 
+  console.log(rows);
   for (var i in rows) {
     console.log(value);
     var value = rows[i].value || 0;
