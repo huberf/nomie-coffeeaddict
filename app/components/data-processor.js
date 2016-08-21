@@ -138,10 +138,10 @@ var generateResults = function(postData) {
     var week = rTime.startOf('week').format('W-YYYY');
 
     if (thisWeekDaily.hasOwnProperty(day)) {
-      thisWeekDaily[day].value = thisWeekDaily[day].value + value;
+      thisWeekDaily[day].value = thisWeekDaily[day].value + 1;
     }
     if (lastWeekDaily.hasOwnProperty(day)) {
-      lastWeekDaily[day].value = lastWeekDaily[day].value + value;
+      lastWeekDaily[day].value = lastWeekDaily[day].value + 1;
     }
 
     if (week === thisWeek) {
