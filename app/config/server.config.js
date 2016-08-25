@@ -6,7 +6,7 @@
 var ServerConfig = {
   "notifications" : false, // if sent to true, you must have smtp and redis configured properly.
   "dev" : {
-    "url" : "https://nomiecoffee.herokuapp.com",
+    "url" : "https://coffeenomie.herokuapp.com",
     "storage" : "localhost",
     "redis" : {
       "host" : "192.168.99.100",
@@ -16,7 +16,7 @@ var ServerConfig = {
     }
   },
   "production" : {
-    "url" : "https://nomiecoffee.herokuapp.com",
+    "url" : "https://coffeenomie.herokuapp.com",
     "storage" : "redis",
     "redis" : {
       "host" : "dokku-redis-bigspender",
