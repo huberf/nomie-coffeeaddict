@@ -12,23 +12,7 @@
 <div class="">
   <div class="nui-list">
     <div class="text-center">
-      <% if(overlimit && goal) { %>
-      <img src="<%=config.server.getActive().url %>/banner-over.png" width="100%" />
-      <div class="nui-item-divider hairline-off"></div>
-      <div class="flex flex-fill hairline-all padding-xs"><img class="hairline-all border-radius" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwBwAFAgH9XSO6wwAAAABJRU5ErkJggg==" width="98%" height="20" /></div>
-      <div class="nui-item-divider hairline-off"></div>
-    <% } else if(goal) { %>
-      <% if(percentTowardGoal>0 && percentTowardGoal < 61) { %>
-      <img src="<%=config.server.getActive().url %>/banner-under.png" width="100%" />
-      <div class="nui-item-divider  hairline-off"></div>
-      <div class="flex flex-fill hairline-all padding-xs"><img class="hairline-all border-radius" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPkWGr0BwADeQHdTs1z2gAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="20" /></div>
-      <% } else if(percentTowardGoal>60 && percentTowardGoal < 99) { %>
-      <img src="<%=config.server.getActive().url %>/banner-warning.png" width="100%" />
-      <div class="nui-item-divider  hairline-off"></div>
-      <div class="flex flex-fill hairline-all padding-xs"><img class="hairline-all border-radius" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN83Cj+HwAGRgJ8FVBijgAAAABJRU5ErkJggg==" width="<%= percentTowardGoal %>%" height="20" /></div>
-      <% } %>
-      <div class="nui-item-divider hairline-off"></div>
-    <% } %>
+      <h2>Your Results</h2>
     </div>
     <div class="nui-item">
       <div class="nui-item-addon nomie-button nomie-button-md">
@@ -38,7 +22,7 @@
       </div>
       <div class="nui-item-content flex-grow">
         <label for="" class="text-bold truncate"><%= experiment.slots.spend.tracker.label %></label>
-        <p>Weekly Budget</p>
+        <p>Weekly Amount</p>
       </div>
       <div class="nui-item-addon truncate ">
         <span class="text-lg"><%= goal %> cups</span>
