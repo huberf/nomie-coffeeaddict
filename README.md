@@ -2,8 +2,6 @@
 
 ## NOTE: This is a work in progress
 
-<img src="http://snap.icorbin.com/Screen-Shot-2016-07-14-22-49-35.png">
-
 This repo is for Coffee Addict, a Nomie Cloud App that is currently underdevelopment. 
 This is based upon the Big Spender cloud app by Brandon Corbin
 
