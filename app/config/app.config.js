@@ -115,6 +115,14 @@ cloudConfig.fields.goal = {
   "description" : null,
   "required" :  true
 };
+cloudConfig.fields.email = {
+  "type": "text",
+  "label": "Your Email",
+  "value": "john@doe.com",
+  "placeholder": "john@doe.com",
+  "description": "Allows you to receive email alerts.",
+  "required": false
+};
 
 //
 // EXAMPLE OF SELECT - this feature is not yet implemented
