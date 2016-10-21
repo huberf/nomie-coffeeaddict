@@ -35,7 +35,7 @@ var generateResults = function(postData) {
 //  postData.experiment.info.email = postData.experiment.info.email || {};
   var email;
   console.log('Info: Email for debugging purposes. Non-production');
-  console.log(postData.experiment.info.email.value);
+  console.log(postData);
   if( postData.experiment.info.hasOwnProperty('email')) {
     email = postData.experiment.info.email.value || null;
   }
