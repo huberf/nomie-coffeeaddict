@@ -118,7 +118,7 @@ cloudConfig.fields.goal = {
 cloudConfig.fields.email = {
   "type": "text",
   "label": "Your Email",
-  "value": "john@doe.com",
+  "value": "",
   "placeholder": "john@doe.com",
   "description": "Allows you to receive email alerts.",
   "required": false
