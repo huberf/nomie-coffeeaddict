@@ -4,6 +4,11 @@ var fs = require('fs');
 var ejs = require('ejs');
 var config = require(__dirname + '/../config/all');
 
+// Email config
+var api_key = process.env.MAILGUN_KEY;
+var Mailgun = require('mailgun').Mailgun;
+var mailBot = new Mailgun(api_key);
+
 /*
 
 Process Nomie Data!
@@ -34,8 +39,6 @@ var generateResults = function(postData) {
 
 //  postData.experiment.info.email = postData.experiment.info.email || {};
   var email;
-  console.log('Info: Email for debugging purposes. Non-production');
-  console.log(postData);
   if( postData.experiment.info.hasOwnProperty('email')) {
     email = postData.experiment.info.email.value || null;
   }
@@ -194,6 +197,16 @@ var generateResults = function(postData) {
   if (goal > 0 && thisWeekSpend > goal) {
     console.log("## CAPTURE :: OVER THE LIMIT!");
     overlimit = true;
+    if( email ) {
+    mailBot.sendRaw('coffee@noahcodes.com',
+            [process.env.MAILGUN_EMAIL],
+              'From: Nomie Coffee Alert <' + process.env.MAILGUN_EMAIL + '>' +
+              '\nTo: ' + email +
+              '\nContent-Type: text/html; charset=utf-8' +
+              '\nSubject: ' + 'You\'ve had too much coffee!' +
+              '\n\n' + 'You have gone over your limit. Try to keep your coffee usage down.',
+              function(err) { err && console.log(err) });
+    }
   }
 
   if (goal > 0 && lastWeekSpend > goal) {
