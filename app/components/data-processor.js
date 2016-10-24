@@ -198,8 +198,8 @@ var generateResults = function(postData) {
     console.log("## CAPTURE :: OVER THE LIMIT!");
     overlimit = true;
     if( email ) {
-    mailBot.sendRaw('coffee@noahcodes.com',
-            [process.env.MAILGUN_EMAIL],
+    mailBot.sendRaw(process.env.MAILGUN_EMAIL,
+            [email],
               'From: Nomie Coffee Alert <' + process.env.MAILGUN_EMAIL + '>' +
               '\nTo: ' + email +
               '\nContent-Type: text/html; charset=utf-8' +
