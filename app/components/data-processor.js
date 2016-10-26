@@ -247,7 +247,8 @@ var generateResults = function(postData) {
     percentTowardGoal: percentTowardGoal,
     thisWeek: thisWeek,
     experiment: postData.experiment,
-    thisWeekSpend: thisWeekSpend
+    thisWeekSpend: thisWeekSpend,
+    peakDay: peakDay
   };
 
   return results;
