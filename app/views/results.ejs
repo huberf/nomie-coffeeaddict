@@ -117,7 +117,7 @@
         <label for="">Peak Day</label>
       </div>
       <div class="nui-item-addon">
-          <span class="text-lg"> <%= ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][peakDay] %></span>
+        <span class="text-lg"> <%= ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][peakDay] %><% if(peakDay == null) { %>None<% } %></span>
       </div>
     </div>
 
