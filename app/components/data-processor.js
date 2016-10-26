@@ -220,6 +220,13 @@ var generateResults = function(postData) {
     percentTowardGoal = ((thisWeekSpend / goal) * 100).toFixed(0);
   }
 
+  var peakDay = null;
+  for(var i = 0; i < lastWeekDaily.length; i++ ) {
+    if(thisWeekDaily[peakDay] < thisWeekDaily[i]) {
+      peakDay = i;
+    }
+  }
+
   // Create a big old Results object full of awesome stuff.
   var results = {
     now: now,
