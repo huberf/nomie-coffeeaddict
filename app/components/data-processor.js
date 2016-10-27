@@ -134,6 +134,7 @@ var generateResults = function(postData) {
   // Do you Magic Work here.
 
   console.log(rows);
+  var allWeeks = {};
   for (var i in rows) {
     console.log(value);
     var value = rows[i].value || 0;
@@ -141,6 +142,8 @@ var generateResults = function(postData) {
     var day = rTime.format(daySlotFormat);
     var dayShortName = rTime.format('ddd');
     var week = rTime.startOf('week').format('W-YYYY');
+
+    allWeeks[week]+=1
 
     if (thisWeekDaily.hasOwnProperty(day)) {
       thisWeekDaily[day].value = thisWeekDaily[day].value + 1;
@@ -162,6 +165,15 @@ var generateResults = function(postData) {
       yesterdaySpend = yesterdaySpend + 1;
     }
   }
+  var average = 0;
+  var loops = 0;
+  for (var prop in allWeeks) {
+    if (allWeeks.hasOwnProperty(prop)) {
+      average+=prop;
+      loops++;
+    }
+  }
+  average = average / loops;
 
 
   //////////////////////////////////////
@@ -248,7 +260,8 @@ var generateResults = function(postData) {
     thisWeek: thisWeek,
     experiment: postData.experiment,
     thisWeekSpend: thisWeekSpend,
-    peakDay: peakDay
+    peakDay: peakDay,
+    average: average
   };
 
   return results;
