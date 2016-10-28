@@ -169,8 +169,8 @@ var generateResults = function(postData) {
   var loops = 0;
   for (var prop in allWeeks) {
     if (allWeeks.hasOwnProperty(prop)) {
-      console.log(prop);
-      average+=prop;
+      console.log(allWeeks[prop]);
+      average+=allWeeks[prop];
       loops++;
     }
   }
