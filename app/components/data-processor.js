@@ -235,7 +235,7 @@ var generateResults = function(postData) {
   }
 
   var peakDay = null;
-  for(var i = 0; i < lastWeekDaily.length; i++ ) {
+  for(var i = 0; i < thisWeekDaily.length; i++ ) {
     if(thisWeekDaily[peakDay] < thisWeekDaily[i]) {
       console.log('Found new peak day');
       console.log(i);
