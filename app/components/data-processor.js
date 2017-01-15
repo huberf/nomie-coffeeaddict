@@ -230,7 +230,8 @@ var generateResults = function(postData) {
   // Determine the percent towards the goal
   var percentTowardGoal = null;
   if (goal) {
-    percentTowardGoal = ((float(thisWeekSpend) / goal) * 100).toFixed(0);
+    console.log(thisWeekSpend);
+    percentTowardGoal = ((thisWeekSpend / goal) * 100).toFixed(0);
   }
 
   var peakDay = null;
