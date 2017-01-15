@@ -230,12 +230,14 @@ var generateResults = function(postData) {
   // Determine the percent towards the goal
   var percentTowardGoal = null;
   if (goal) {
-    percentTowardGoal = ((thisWeekSpend / goal) * 100).toFixed(0);
+    percentTowardGoal = ((float(thisWeekSpend) / goal) * 100).toFixed(0);
   }
 
   var peakDay = null;
   for(var i = 0; i < lastWeekDaily.length; i++ ) {
     if(thisWeekDaily[peakDay] < thisWeekDaily[i]) {
+      console.log('Found new peak day');
+      console.log(i);
       peakDay = i;
     }
   }
