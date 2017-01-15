@@ -169,8 +169,9 @@ var generateResults = function(postData) {
   var loops = 0;
   for (var prop in allWeeks) {
     if (allWeeks.hasOwnProperty(prop)) {
+      console.log('Logging this week prop');
       console.log(allWeeks[prop]);
-      average+=allWeeks[prop];
+      average+=allWeeks[prop].value;
       loops++;
     }
   }
@@ -230,11 +231,14 @@ var generateResults = function(postData) {
   // Determine the percent towards the goal
   var percentTowardGoal = null;
   if (goal) {
-    console.log(thisWeekSpend);
     percentTowardGoal = ((thisWeekSpend / goal) * 100).toFixed(0);
   }
 
   var peakDay = null;
+  console.log('This week daily');
+  console.log(thisWeekDaily);
+  console.log('Last week daily');
+  console.log(lastWeekDaily);
   for(var i = 0; i < thisWeekDaily.length; i++ ) {
     if(thisWeekDaily[peakDay] < thisWeekDaily[i]) {
       console.log('Found new peak day');
